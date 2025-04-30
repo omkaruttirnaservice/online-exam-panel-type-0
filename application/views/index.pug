@@ -1,0 +1,99 @@
+extends layout_2
+
+block content
+    .container--base
+        div.banner-image-box
+            img(class='banner-image' src="img/banner-image/bannerImage.jpg" alt='Banner image')
+        div.container--primary
+            div.main-body 
+                -const a = true;
+                -const btn_count = [0,1,2,3,4];
+                -const btn_count2 = [5,6,7,8,9];
+                if(isSessionMessage)
+                    .alert.c-alert-msg(class=isSessionMessage.class)
+                        strong #{isSessionMessage.msg}
+                h3.auth-forms-heading Assessment Link
+                .panel-body
+                    form(method='POST' action='chk/link')
+                        .register-box-body
+                            .form-group
+                                if(exam_link)
+                                    .input-element-container
+                                        label.input-label LINK ID
+                                        input#i_new_test_link.input-element(type='text' name='_lnk' aria-haspopup='true' role='textbox' placeholder='eg. 5125' minlength='1' maxlength='16', value = exam_link, required='' autocomplete='off' readonly="true")
+
+                                else
+                                    .input-element-container 
+                                        label.input-label LINK ID
+                                        input#i_new_test_link.input-element(type='text' name='_lnk' value="" placeholder='eg.5125' minlength='1' maxlength='16' required='' autocomplete='off' readonly="true")
+
+
+                                div.center
+                                    each btn_nummber in btn_count
+                                        button.button-numbers(type='button' onclick="setText(this,event,"+btn_nummber+")") #{btn_nummber}
+                                    .clearfix
+                                    each btn_nummber in btn_count2
+                                        button.button-numbers(type='button' onclick="setText(this,event,"+btn_nummber+")") #{btn_nummber}
+                                    .clearfix
+                                div.center.mt-2
+                                    button.button1.button1--clear(type='button' onclick="removeText(this,event,'all')") Clear All
+                                    button.button1.button1--back(type='button' onclick="removeText(this,event,'back')") Backspace
+
+                                div.center.mt-2
+                                    input.button1.button1--submit.c_approveing_1(type='submit' value='Submit Exam Link' onclick='hideMe(this,event)')
+                                    button.button1.button1--submit.hide.c_approveing(type='button' ) validating your link ...
+
+block inline_js
+    script(type='text/javascript').
+
+        function timeOut() {
+            setTimeout(function () {
+                $('.c-alert-msg').slideUp(750);
+                $('.c_approveing').addClass('hide');
+                $('.c_approveing_1').removeClass('hide');
+
+            }, 3000);
+        }
+        timeOut();
+            $(document).ready(function () {
+                $('#i_new_test_link').focus();
+        });
+        function hideMe(_this, event) {
+        var val = $('#i_new_test_link').val();
+
+        if (val.length == 0) {
+        event.preventDefault();
+        return false;
+        } else {
+        $(_this).addClass('hide');
+        $('.c_approveing').removeClass('hide');
+        }
+        }
+        function setText(_this, event, number) {
+        var val = $('#i_new_test_link').val();
+            if(isNaN(val)){
+                val = '';
+                }
+                $('#i_new_test_link').val(val + number);
+
+                $('#i_new_test_link').focus();
+        }
+        function removeText(_this, event, type) {
+            $('.c_approveing').addClass('hide');
+                $('.c_approveing_1').removeClass('hide');
+        var val = $('#i_new_test_link').val();
+        if (type == 'all') {
+        $('#i_new_test_link').val('');
+
+        } else {
+        var len = parseInt(val.length);
+        if (len > 0) {
+        var val123 = $('#i_new_test_link').val().substring(0, len - 1);
+        $('#i_new_test_link').val(val123);
+        }
+        }
+        $('#i_new_test_link').focus();
+        }
+
+
+

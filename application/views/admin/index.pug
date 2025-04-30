@@ -1,0 +1,134 @@
+extends layout
+
+block content
+   .container-fluid
+        .modal.fade#modal-id
+            .modal-dialog.modal-sm
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h4.modal-title Request To Master Server
+                    .modal-body
+                        .form-group
+                                input#centerCode.form-control(type='number',require='true', placeholder='Enter Center Code')
+                        button#requestCenterCode.btn.btn-primary(type='button') Request For Login Details
+
+        .modal.fade#modalIdIp
+            .modal-dialog.modal-sm
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h4.modal-title Set Master Server IP URL
+                    .modal-body
+                        .form-group
+                                input#ipAddress.form-control(type='text',require='true', placeholder='eg. 192.168.1.5:81/abc/')
+                                small.text-danger
+                                    strong Note:- 1) Please Don't add http:// to URL.
+                                small.text-danger
+                                    strong 2) Add '/' at end.
+
+                        button#requestUpdateIP.btn.btn-primary(type='button') Update IP
+
+        .row(style="margin-top:90px;")
+            .col-xs-3.col-sm-3.col-md-3.col-lg-3
+            .col-xs-5.col-sm-5.col-md-5.col-lg-5
+                .panel.panel-success
+                    .panel-heading
+                        h3.panel-title Sign In
+                    .panel-body
+                        form(action='admin/check-examo-auth', method='POST', role='form')
+                            legend.text-danger 
+                                strong Server Access (Strictly Authorised Person)
+                            .form-group
+                                label(for='') Username
+                                input.form-control(type='text',name="user_name",require='true' placeholder='username')
+                            .form-group
+                                label(for='') Password
+                                input.form-control(type='password',name="password",require='true', placeholder='*******')
+                            button.btn.btn-primary(type='submit') Sign In
+                            a.btn.btn-danger.pull-right.btn-sm(data-toggle='modal', href='#modalIdIp',style="") Set Master IP
+                            a.btn.btn-default.pull-right.btn-sm(data-toggle='modal', href='#modal-id',style="") Request For Login
+                     
+block inline_css
+    style.
+        .nav-li{
+            color:red
+        } 
+
+block inline_js
+    script.
+        $(function(){
+            $('#requestCenterCode').on('click',function(){
+                var center_code = $('#centerCode').val();
+                $('#modal-id').modal('hide');
+                $('#centerCode').val('');
+                addLoading();
+                $.ajax({
+                    "url": getUrl()+"requestCenterCode",
+                    "type": "POST",
+                    "data":{
+                            center_code:center_code
+                        },
+                    success:function(data){
+                        removeLoading();
+                        if(data.call == 1){
+                            alert('Login Details Updated Successfully, Contact Master Server Admin For Login Info.');
+                            return false;
+                        }
+                        if(data.call == 0){
+                            alert('Internal Query Error.');
+                            return false;
+                        }
+                        if(data.call == 5){
+                            alert('Invalid Center Code, Please Contact To Master Server Admin.');
+                            
+                        } 
+                        if(data.call == 999){
+                            alert('Master Server Not Found');
+                            
+                        } 
+                    },error:function(error){
+                        removeLoading();
+                         alert('Server Error');
+                         
+                    }
+                });
+            });  
+
+            $('#requestUpdateIP').on('click',function(){
+                var ipAdress = $('#ipAddress').val();
+                $('#modalIdIp').modal('hide');
+                $('#ipAddress').val('');
+                addLoading();
+                $.ajax({
+                    "url": getUrl()+"requestUpdateIP",
+                    "type": "POST",
+                    "data":{
+                            ipAdress:'http://'+ipAdress
+                        },
+                    success:function(data){
+                        removeLoading();
+                        if(data.call == 1){
+                            alert('IP Address URL SET Set Successfully');
+                            return false;
+                        }
+                        if(data.call == 0){
+                            alert('Internal Query Error.');
+                            return false;
+                        }
+                        if(data.call == 999){
+                            alert('Master Server Not Found');
+                            
+                        } 
+                    },error:function(error){
+                        removeLoading();
+                         alert('Server Error');
+                         
+                    }
+                });
+            });                                        
+        });
+
+
+       
+        

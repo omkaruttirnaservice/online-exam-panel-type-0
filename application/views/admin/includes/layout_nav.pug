@@ -1,0 +1,16 @@
+.nav.navbar.navbar-default(role='navigation')
+    .collapse.navbar-collapse.navbar-ex1-collapse
+        ul.nav.navbar-nav
+            li.exam-active
+                a(href='/admin/exams') Exam Section
+            li.student-active
+                a(href='/admin/students') Student Section
+            li.nav-li.live-active
+                a(href='/admin/live-exam-status') Live Status
+            li.nav-li.adminner-active
+                a(href='/admin/adminner') Adminer
+            li.nav-li.upload-banner 
+                a(href='/admin/upload-banner') Upload Baner
+        a.btn.btn-danger.pull-right.btn-sm(href='/admin/logout', style='margin-top:8px') Server #{cc} Logout
+        a.btn.pull-right(href='#',style='margin-top:8px')
+            strong #{c_name}

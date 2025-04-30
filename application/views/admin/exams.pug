@@ -1,0 +1,80 @@
+extends layout
+
+block content
+    .container-fluid
+        include includes/layout_nav.pug
+                    
+        .row
+            .col-xs-12.col-sm-12.col-md-12.col-lg-12
+                button#get-exam-list.btn.btn-primary.btn-sm(type='button') Get New Exam List
+                button#agree.btn.btn-success.btn-sm.hide(type='button') I Agree
+                button#start_exam.btn.btn-success.btn-sm.hide(type='button') Start Exam
+
+            .col-xs-1.col-sm-1.col-md-1.col-lg-1
+            .col-xs-10.col-sm-10.col-md-10.col-lg-10(style="margin-top:10px;")
+                h4
+                    caption Saved Exams
+                table.table.table-striped.table-bordered.table-hover
+                    thead
+                        tr
+                            th(width='3%') Sr. No
+                            th(width='10%') Exam Name
+                            th(width='3%') Link
+                            th(width='3%') Duration
+                            th(width='5%') Batch No
+                            th(width='5%') Exam Started 
+                            th(width='5%') Exam Back-Up 
+                            th(width='5%') Exam Stopped
+                            th(width='5%') Mark Absenty
+                    tbody#done_exams_list_tbody
+                        tr
+                            td(colspan="7", style="text-align:center") No Exams Found
+            #new_exams_list_table.hide.col-xs-8.col-sm-10.col-md-10.col-lg-10.col-md-offset-1(style="margin-top:10px;")
+                h4
+                    caption Unsaved Exams
+                table.table.table-striped.table-bordered.table-hover
+                    thead
+                        tr
+                            th Sr. No
+                            th Exam Name
+                            th Duration
+                            th Batch No
+                            th Download Exam
+                    tbody#new_exams_list_tbody
+                        tr
+                            td(colspan="7", style="text-align:center") No Exams Found
+block inline_css
+    style.
+        .nav-li{
+            color:red
+        }   
+block inline_js
+    script.
+        $(function(){
+            var socket = io();
+            $('.exam-active').addClass('active');
+
+            $('#agree').on('click',function(){
+                socket.emit('i agree', 'hi');
+            });
+
+            $('#start_exam').on('click',function(){
+                socket.emit('start exam', 'hi');
+            })
+            
+        });
+        function confirmCall(msg,return_data){
+                Lobibox.confirm({
+                    msg: msg,
+                    callback: function ($this, type, ev) {
+                        return_data($this, type, ev);
+                    }
+                });
+        }
+
+block js_link
+    script(src="/js/exams.exam.js")
+    
+
+       
+        

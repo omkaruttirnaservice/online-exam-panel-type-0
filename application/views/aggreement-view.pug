@@ -32,33 +32,27 @@ block content
                         #english.col-xs-12.col-sm-12.col-md-12.col-lg-12.set-bor(style='margin-top: 9px; padding: 1rem 3rem;')
                             h2.instruction-heading Important Instructions  :- 
                             ol
-                                li Candidates should not bring a calculator, electronic watch, Bluetooth, mobile phone, pager or
-                                    | other materials or any other documents to the examination center premises.
-                                li No one will be able to leave the Examination Hall from the start of the examination 
-                                    | till the end of the examination
-                                li The candidate has been temporarily given admission for the examination, assuming that all
-                                    | the information in the application form is correct. If at any stage the information filled 
-                                    | by the candidates is found to be incorrect or false, the candidate will be canceled and the 
-                                    | candidate himself responsible for the result. 
-                                li The signature signed by the candidate, the signature on the attendance sheet 
-                                    | at the time of examination and the signature signed in the application will be checked.
-                                    | If there is a discrepancy, his candidacy will be canceled at any stage.
-                                li If any candidate misbehaves at the examination center, action will be taken in accordance with 
-                                    | the appropriate law.
-                                //- li.text-warning(style='font-weight: bold;')  WARNING: The answer once given cannot be changed under any circumstances.
+                                li Candidates should not bring a calculator, electronic watch, Bluetooth, mobile phone, pager or other materials or any other documents to the examination center premises.
+
+                                li No one will be able to leave the Examination Hall from the start of the examination till the end of the examination.
+
+                                li The candidate has been temporarily given admission for the examination, assuming that all the information in the application form is correct. If at any stage the information filled by the candidates is found to be incorrect or false, the candidate will be canceled and the candidate himself responsible for the result. 
+
+                                li The signature signed by the candidate, the signature on the attendance sheet at the time of examination and the signature signed in the application will be checked. If there is a discrepancy, his candidacy will be canceled at any stage.
+
+                                li If any candidate misbehaves at the examination center, action will be taken in accordance with the appropriate law.
                             hr    
 
                             h2.instruction-heading General Instructions  :- 
                             ol
 
                                 li Total duration of Exam is&nbsp;
-                                    strong #{test_info.exam_info.test_duration}
-                                li 
-                                    |There will be 
+                                    strong #{test_info.exam_info.test_duration}.
+                                li There will be 
                                     strong total #{test_info.exam_info.test_total_question} 
-                                    | questions for exam
+                                    | questions for exam.
                                 li 
-                                    |Each question is allotted 
+                                    | Each question is allotted 
                                     strong #{test_info.exam_info.test_mark_per_q}
                                     | &nbsp;for correct response.
                                 li
@@ -164,7 +158,7 @@ block content
 
                                 li परीक्षेचा एकूण कालावधी 
                                     strong  #{test_info.exam_info.test_duration}
-                                    | आहे.
+                                    |&nbsp;आहे.
                                 li 
                                     |परीक्षेसाठी   
                                     strong एकूण #{test_info.exam_info.test_total_question} 
@@ -178,7 +172,7 @@ block content
                                     strong #{test_info.exam_info.test_total_marks}
                                 li
                                     | प्रत्येक प्रश्नाच्या अचूकतेसाठी उमेदवारांना सूचना 
-                                    strong  क्रमांक 3 
+                                    strong  क्रमांक 3
                                     |&nbsp; मध्ये नमूद केल्याप्रमाणे गुण देण्यात येतील.
 
                                 if(mt_is_negative)
@@ -201,6 +195,14 @@ block content
                                         li
                                             img(src="/img/exam_icon/correct_sq.png")
                                             span  आपण प्रश्नाचे उत्तर दिले आहे.
+
+                                        li
+                                            img(src="/img/exam_icon/mark_review_sq.png")
+                                            span  तुम्ही प्रश्न पुनरावलोकनासाठी चिन्हांकित केला आहे.
+                                        li
+                                            img(src="/img/exam_icon/ans_mark_for_review_sq.png")
+                                            span  तुम्ही प्रश्नाचे उत्तर दिले आहे आणि तो पुनरावलोकनासाठी चिन्हांकित केला आहे.
+
                                 li
                                     ol
                                         li(style="color:red") एखाद्या प्रश्नाचे उत्तर देण्यासाठी, पुढील गोष्टी करा: 

@@ -38,11 +38,7 @@ block content
                     h3 
                         |You are about to start this Exam in
                         span#time 
-                            <strong class="text-danger"> 10 Seconds</strong>
-                        |,
-                    h3
-                        i.fa.fa-thumbs-up &nbsp; 
-                        |Best of Luck from our team.
+                            <strong class="text-danger"> 10 Seconds.</strong>
                 a.button1.button1--start-exam.col-xs-12.col-sm-12.col-md-12.col-lg-12.c_approveing_1(href='/test' style='padding: 20px;font-size: 40px !important;' onclick='hideMe(this,event)') 
                     i.fa.fa-clock-o &nbsp;
                     |Start Exam 
@@ -56,11 +52,8 @@ block content
                         strong RESUME 
                         |this Exam in
                         span#time 
-                            <strong class="text-danger"> 10 Seconds</strong>
+                            <strong class="text-danger"> 10 Seconds.</strong>
                         |, hope you are doing well !!!
-                    h3  
-                        i.fa.fa-thumbs-up &nbsp;&nbsp;&nbsp;
-                        |  Best of Luck from our team.
                 a.btn.btn-info.col-xs-12.col-sm-12.col-md-12.col-lg-12.c_approveing_1(href='/test' style='padding: 20px;font-size: 40px !important;' onclick='hideMe(this,event)') 
                     i.fa.fa-history &nbsp;
                     | Resume Exam
@@ -74,7 +67,7 @@ block inline_js
         setInterval(function () {
             if(!is_done){
                 if(time > -1){
-                    $('#time').html('<strong class="text-danger">&nbsp'+time+' Seconds</strong>');
+                    $('#time').html('<strong class="text-danger">&nbsp'+time+' Seconds.</strong>');
                     time -= 1;
                 }else{
                     is_done = true;

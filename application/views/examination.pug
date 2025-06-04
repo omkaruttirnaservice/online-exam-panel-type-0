@@ -189,7 +189,7 @@ block inline_js
                         '<td><p>'+
                             '<span class="ans_done_lable" name="button" style="width:45px;padding: 8px;">'+
                             '<span style="height: 50px;width: 50px;">0'+_ttt[subject_stat_indexOf][0]+'</span>&nbsp;</span> </p></td>'+
-                        '<th style="color:black">Solved</th> '+
+                        '<th style="color:black">Answered</th> '+
                     '</tr>'+
                     '<tr>'+
                         '<td><p>'+
@@ -210,7 +210,7 @@ block inline_js
                             '<span class="ans_not_done_lable" name="button" style="width:35px;padding: 8px;color:#fff !important;background-color: #fffefe !important;border: 1px solid #000">'+
                             '<span>0'+_ttt[subject_stat_indexOf][1]+'</span>&nbsp;</span></td></p>'+
                         '</td>'+
-                        '<th style="color:black">UnSolved</th>'+
+                        '<th style="color:black">Not answered</th>'+
                     '</tr>'+
                 '</table>';
                 $(this).attr('data-original-title',_t).tooltip('show');
@@ -334,11 +334,11 @@ block content
                                 td(style='padding: 0;')
                                     span.ans_done_lable(name='button' style='width:35px;padding: 8px;')
                                         span#q-ans-done 20
-                                    span.summary-solved-title(style='margin-top: 7px;') Solved
+                                    span.summary-solved-title(style='margin-top: 7px;') Answered
                                 td(style='padding: 0;')
                                     span.ans_not_done_lable(name='button' style='width:35px;padding: 6px; color:#fff !important;background-color: #fffefe !important;')
                                         span#q-not-done 15
-                                    span.summary-unsolved-title(style='margin-top: 7px') UnSolved
+                                    span.summary-unsolved-title(style='margin-top: 7px') Not answered
                             tr
                                 td(colspan="2" style='padding: 0;')
                                     span.ans_review_lable(name='button' style='width:35px;padding: 8px;')

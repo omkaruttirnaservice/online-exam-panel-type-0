@@ -29,56 +29,40 @@ block content
                                     option(value="eng") English 
                                     option(value="mar") मराठी 
                     .panel-body
+
                         #english.col-xs-12.col-sm-12.col-md-12.col-lg-12.set-bor(style='margin-top: 9px; padding: 1rem 3rem;')
-                            h2.instruction-heading Important Instructions  :- 
+                            h2.instruction-heading Important Instructions&nbsp;:&nbsp;-
                             ol
-                                li Candidates should not bring a calculator, electronic watch, Bluetooth, mobile phone, pager or other materials or any other documents to the examination center premises.
+                                li Candidates must not carry calculators, analog watches, electronic watches, mobile phones, Bluetooth devices, pagers, or any similar electronic gadgets to the examination center premises.
+                                li Leaving the Examination Hall is strictly prohibited from the beginning of the exam until its conclusion
+                                li Candidates have been provisionally admitted to the examination based on the information provided in the application form. If any discrepancy or false information is found at any stage, the candidature will be cancelled and the candidate will be held solely responsible. 
+                                li The signatures on the admit card, attendance sheet, and application form will be cross-verified. Any discrepancy may lead to disqualification.
+                                li Misconduct or misbehavior at the examination center will invite legal action under applicable rules.
 
-                                li No one will be able to leave the Examination Hall from the start of the examination till the end of the examination.
-
-                                li The candidate has been temporarily given admission for the examination, assuming that all the information in the application form is correct. If at any stage the information filled by the candidates is found to be incorrect or false, the candidate will be canceled and the candidate himself responsible for the result. 
-
-                                li The signature signed by the candidate, the signature on the attendance sheet at the time of examination and the signature signed in the application will be checked. If there is a discrepancy, his candidacy will be canceled at any stage.
-
-                                li If any candidate misbehaves at the examination center, action will be taken in accordance with the appropriate law.
                             hr    
-
-                            h2.instruction-heading General Instructions  :- 
+                            h2.instruction-heading General Instructions&nbsp;:&nbsp;-
                             ol
 
-                                li Total duration of Exam is&nbsp;
-                                    strong #{test_info.exam_info.test_duration}.
-                                li There will be 
-                                    strong total #{test_info.exam_info.test_total_question} 
-                                    | questions for exam.
-                                li 
-                                    | Each question is allotted 
-                                    strong #{test_info.exam_info.test_mark_per_q}
-                                    | &nbsp;for correct response.
-                                li
-                                    | Total marks for exam :&nbsp;
-                                    strong #{test_info.exam_info.test_total_marks}
-                                li
-                                    | Candidate will be awarded marks as stated above in instruction 
-                                    strong No.3
-                                    |&nbsp;for correct of each question.
+                                li  Total duration of the examination&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_duration}.
+                                li 	Total number of questions&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_total_question} 
+                                li  Marks for each correct answer&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_mark_per_q}
+                                li  Total marks&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_total_marks}
 
                                 -const mt_is_negative = test_info.exam_info.mt_negativ_mark;
                                 if(mt_is_negative)
-                                    li
+                                    li  Negative Marking&nbsp;:&nbsp;-
                                         strong #{test_info.exam_info.mt_negativ_mark}
-                                        | &nbsp;mark will be deducted for indicating incorrect response
-                                        | for each question.
+                                        | &nbsp;mark will be deducted for every incorrect response.
                                 else
                                     li
-                                        strong No mark will be deducted
-                                        |&nbsp;for indicating incorrect response for each question.
-                                li
-                                    strong No deduction
-                                    |&nbsp;from the total score will be made if no response is indicated.
+                                        strong No marks will be deducted for unanswered questions.
 
-                                li The clock will be set at the server. The countdown timer in the top right corner of screen will display the remaining time available for you to complete the examination. When the timer reaches zero, the examination will end by itself. You will not be required to end or submit your examination.
-                                li The Questions Palette displayed on the right side of screen will show the status of each question using one of the following symbols: 
+                                li The countdown timer on the top-right corner of the screen will display the remaining time. The test will auto-submit once the time expires.
+                                li The Question Palette will help you track the status of each question: Not Answered, Answered, Marked for Review, and Answered & Marked for Review
                                     ol
                                         li
                                             img(src="/img/exam_icon/visited_sq.png")
@@ -92,54 +76,150 @@ block content
                                         li
                                             img(src="/img/exam_icon/ans_mark_for_review_sq.png")
                                             span  You have answered and marked question for review.
-                                li
-                                    ol
-                                        li(style="color:red") To answer a question, do the following: 
-                                            ol(style="color:black")
-                                                li Click on the question number in the Question Palette at the right of your screen to go to that numbered question directly. Note that using this option does NOT save your answer to the current question.
-                                                li Click on 
-                                                    strong Save & Next
-                                                    |  to save your answer for the current question and then go to the next question.
+                                    
+                                li Click on the question number to navigate. Use 'Save & Next' to save your answer and move to the next question.
 
-                                        li(style="color:red") Answering a Question:
-                                            ol(style="color:black")
-                                                li To select your answer, click on the button of one of the options.
+                                li To select an answer, click the corresponding option button.
 
-                                li
-                                    p(style='font-weight: 600;') Do not Close the Exam Window or try to Restart the System at the Examination Center .
-
-                                    p(style='font-weight: 600;') In Case of Restarting / Shutdown of Computer due to Technical Reasons, Immediately report the  same to the INVIGILATOR on Duty. Answers  already marked and Time of the Examination will be saved and the Candidate will be able to RESUME the Examination from the exact point that last appeared before him/her.
-
-                                    p(style='font-weight: 600;') Any Candidate attempting to Copy or found copying or referring to or found in possession of any printed / handwritten material, notes, books, mobile phone, or any electronic device etc. or helping or asking help from any other person in any manner or communicating by means of words, signs, gesture, codes and other similar acts to exchange, impact or acquire relevant information in the Examination Hall will be treated as adoption of unfair means in the Examination. HE / SHE shall be dealt with severely and punished sternly under the Rules and Regulation.
-
-                                //- li
-                                //-     strong.text-danger
                             hr
-                            div(style='margin-top: 3px;')
-                                strong About using ROUGH SHEET  :- 
+                            h2.instruction-heading System and Technical Instructions&nbsp;:&nbsp;-
                             ol
-                                li A Rough Sheet will be provided to the candidates for carrying out rough work, calculations, etc. during the Examination. Candidates are required to mention their Name, Roll Number, Registration Number, Exam Date and Batch Time on the Rough Sheet.
-                                li Rough Sheet needs to be returned to the Invigilator before leaving the Exam Hall/Room/Lab. The candidates shall not be permitted to carry the rough sheets used /unused while they leave the exam hall/room/labs.
+                                li Do not close or minimize the exam window during the examination
+                                li In case of any technical issues such as system restart or shutdown, immediately inform the invigilator. Your answers and exam progress will be saved automatically.
+                                li Do not attempt to open any other software, window, or browser tab during the exam
+                                li Tampering with the system or using unauthorized software or extensions will result in immediate disqualification 
+
                             hr
-                            div(style='margin-top: 3px;')
-                                strong Maintenance of Discipline in the Examination Hall/Room/Lab :- 
-                                p(style="color:red;") Candidates should strictly follow the various written/verbal instructions and maintain discipline in the Examination Hall/Room/Lab. Candidates may be debarred / disqualified from the examination for any of the following reasons:
+                            h2.instruction-heading Use of Rough Sheet&nbsp;:&nbsp;-
                             ol
-                                li Attempting to take the examination on behalf of someone else i.e. Impersonations.
-                                li Giving or receiving assistance of any kind during the examination or communicating in any way with other candidates or with outsiders.
-                                li Tempering / attempting to tamper with the computer system or posing hindrance in the smooth conduct of the examination.
-                                li Leaving the examination centre without the permission of the invigilator.
-                                li Using prohibited aids or carrying banned items in the examination premises / room / hall / lab, such as mobile / cellular phones, I-pad, palmtop, pager, books, study material, printed or handwritten notes, pieces of paper, electronic diaries, scientific calculators, watch alarms, smart watches, Bluetooth,  hand bands, listening devices and recording or photographic devices or any kind of communication device/gadget, etc.
-                                li Attempting to copy examination questions and / or examination responses (in any format) from the fellow candidate / examinations centre.
-                                li Candidate misbehaving before, during or after the exams.
-                                li Candidate manhandling an Invigilator before, during or after the Exams, etc.
-                            p.text-danger(style="text-align: center;") 
-                                strong The Superintendent of Examination is authorized to expel a candidate from the Examination Centre on observing any misconduct by the Candidates. A Candidate so expelled must, before leaving the Examination Hall, submit to the Institute his/her explanation in writing through the Superintendent of Examination. Once a candidate is so expelled he/she may not be allowed to appear in the remaining papers of the examination.
-                            center
-                                p.text-warning(style="font-weight: 500;") 
-                                    strong SMOKING, CHEWING OF TOBACCO, BETEL INTOXICANT, CARRYING/USE OF MOBILE PHONES, ETC IS TOTALLY BANNED INSIDE THE EXAMINATION HALL / ROOM / LAB / CENTRE PREMISES.
+                                li Rough sheets will be provided at the examination center.
+                                li Candidates must write their Name, Roll Number, Registration Number, Exam Date, and Batch Time on each sheet used.
+                                li All rough sheets, used or unused, must be returned to the invigilator before leaving the examination hall. Failure to do so will be treated as a violation of exam rules. 
+
+                            hr
+                            h2.instruction-heading Prohibited Activities and Misconduct&nbsp;:&nbsp;-
+                            p The following actions are strictly prohibited and will result in immediate disqualification and possible legal action:
+                            ol
+                                li Impersonation or appearing in place of another candidate
+                                li Attempting to give or receive assistance in any form
+                                li Using mobile phones, smartwatches, Bluetooth devices, or any communication tools. 
+                                li Taking screenshots, photographs, or making any recordings of the exam content.
+                                li Accessing unauthorized material or websites during the examination.
+                                li Using foul language, misbehaving, or arguing with the examination staff.
+                                li Threatening or intimidating invigilators or other candidates.
+                            
+                            p The Examination Superintendent is authorized to expel any candidate found guilty of misconduct. Such candidates will be required to provide a written explanation and may be barred from future examinations.
+
+
+                            hr
+                            h2.instruction-heading Strict Prohibitions&nbsp;:&nbsp;-
+                            ol 
+                                li Chewing tobacco, consuming betel, or using intoxicating substances is strictly prohibited within the exam center premises.
+                                li Possession or use of mobile phones, cameras, or similar electronic devices inside the examination center is strictly forbidden.
+                                li Any form of malpractice will lead to immediate cancellation of candidature.
+                            
+                            p Candidates are advised to read all instructions carefully and comply fully. Non-compliance may lead to disqualification and/or legal consequences.
+
                         #marathi.hide.col-xs-12.col-sm-12.col-md-12.col-lg-12.set-bor(style='margin-top: 9px; padding: 1rem 3rem;')
-                            h2.instruction-heading महत्वाच्या सूचना  :- 
+                            h2.instruction-heading महत्वाच्या सूचना&nbsp;:&nbsp;-
+                            ol
+                                li उमेदवारांनी कॅल्क्युलेटर, घड्याळे, इलेक्ट्रॉनिक घड्याळे, मोबाइल फोन, ब्लूटूथ डिव्हाइसेस, पेजर किंवा अशा कोणत्याही इलेक्ट्रॉनिक उपकरणांसह परीक्षा केंद्रात प्रवेश करू नये.
+                                li परीक्षा सुरू झाल्यानंतर ते संपेपर्यंत परीक्षा हॉलमधून बाहेर जाणे कडकपणे मनाई आहे.
+                                li उमेदवारांना अर्जामध्ये दिलेल्या माहितीनुसार तात्पुरत्या स्वरूपात परीक्षेस बसण्याची परवानगी देण्यात आली आहे. कोणतीही माहिती खोटी किंवा चुकीची आढळल्यास उमेदवारी रद्द केली जाईल आणि संपूर्ण जबाबदारी उमेदवाराची असेल.
+                                li प्रवेशपत्र, हजेरीपत्रक आणि अर्जावर केलेले स्वाक्षऱ्या पडताळण्यात येतील. स्वाक्षरीत विसंगती आढळल्यास उमेदवारी रद्द केली जाईल.
+                                li परीक्षास्थळी गैरवर्तन किंवा गैरवर्तणूक केल्यास लागू असलेल्या कायद्यांनुसार कारवाई केली जाईल.
+
+
+                            hr    
+                            h2.instruction-heading सामान्य सूचना&nbsp;:&nbsp;-
+                            ol
+
+                                li  परीक्षेची एकूण वेळ&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_duration}.
+                                li 	एकूण प्रश्नांची संख्या&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_total_question} 
+                                li  प्रत्येक बरोबर उत्तरासाठी गुण&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_mark_per_q}
+                                li  एकूण गुण&nbsp;:&nbsp;-
+                                    strong &nbsp;#{test_info.exam_info.test_total_marks}
+
+                                -const _mt_is_negative = test_info.exam_info.mt_negativ_mark;
+                                if(_mt_is_negative)
+                                    li  नकारात्मक गुण&nbsp;:&nbsp;-
+                                        | लागू असल्यास प्रत्येक चुकीच्या उत्तरासाठी 
+                                        strong #{test_info.exam_info.mt_negativ_mark} 
+                                        | &nbsp;गुण वजा केले जातील.
+                                else
+                                    li उत्तर न दिल्यास कोणतेही गुण वजा केले जाणार नाहीत.
+
+                                li स्क्रीनच्या वरच्या उजव्या बाजूला वेळेचा काऊंटडाऊन टायमर दिसेल. वेळ संपल्यानंतर परीक्षा आपोआप सबमिट होईल.
+                                li प्रश्न पॅलेटद्वारे प्रत्येक प्रश्नाची स्थिती ओळखता येईल: उत्तर न दिलेले, उत्तर दिलेले, पुनरावलोकनासाठी चिन्हांकित, उत्तर दिलेले आणि पुनरावलोकनासाठी चिन्हांकित.
+                                li प्रश्न पॅलेटद्वारे प्रत्येक प्रश्नाची स्थिती ओळखता येईल
+                                    ol
+                                        li
+                                            img(src="/img/exam_icon/visited_sq.png")
+                                            span &nbsp;उत्तर न दिलेले (You have not answered the question.)
+                                        li
+                                            img(src="/img/exam_icon/correct_sq.png")
+                                            span &nbsp;उत्तर दिलेले (You have answered the question.)
+                                        li
+                                            img(src="/img/exam_icon/mark_review_sq.png")
+                                            span &nbsp;पुनरावलोकनासाठी चिन्हांकित (You have marked question for review.)
+                                        li
+                                            img(src="/img/exam_icon/ans_mark_for_review_sq.png")
+                                            span &nbsp;उत्तर दिलेले आणि पुनरावलोकनासाठी चिन्हांकित (You have answered and marked question for review.)
+
+                                li प्रश्न क्रमांकावर क्लिक करून आपण प्रश्नांमध्ये जाऊ शकता. ‘सेव्ह व पुढे’ वर क्लिक केल्यास उत्तर जतन होईल आणि पुढील प्रश्न दिसेल.
+                                li उत्तर निवडण्यासाठी संबंधित पर्यायावर क्लिक करा.
+                                    
+
+                            hr
+                            h2.instruction-heading सिस्टम व तांत्रिक सूचना&nbsp;:&nbsp;-
+                            ol
+                                li परीक्षेदरम्यान परीक्षा विंडो बंद करू नये किंवा मिनिमाइझ करू नये.
+                                li संगणक रिस्टार्ट किंवा शटडाऊन झाल्यास त्वरित पर्यवेक्षकाला माहिती द्यावी. तुमची उत्तरं आणि परीक्षेची प्रगती स्वयंचलितरित्या जतन केली जाईल.
+                                li परीक्षेदरम्यान इतर कोणताही सॉफ्टवेअर, विंडो किंवा ब्राउझर टॅब उघडण्याचा प्रयत्न करू नका.
+                                li सिस्टीममध्ये छेडछाड करणे किंवा अनधिकृत सॉफ्टवेअर/एक्स्टेंशनचा वापर केल्यास उमेदवारी रद्द केली जाईल.
+
+                            hr
+                            h2.instruction-heading रफ शीटचा वापर&nbsp;:&nbsp;-
+                            ol
+                                li गणिते सोडविण्यासाठी परीक्षा केंद्रात रफ शीट्स दिल्या जातील.
+                                li प्रत्येक रफ शीटवर उमेदवाराचे नाव, क्रमांक, नोंदणी क्रमांक, परीक्षा दिनांक आणि बॅच वेळ लिहिणे बंधनकारक आहे.
+                                li सर्व रफ शीट्स (वापरलेल्या किंवा न वापरलेल्या) परीक्षा संपल्यानंतर निरीक्षकाकडे जमा कराव्यात. तसे न केल्यास परीक्षेच्या नियमांचे उल्लंघन समजले जाईल.
+
+
+                            hr
+                            h2.instruction-heading प्रतिबंधित क्रिया आणि गैरवर्तन&nbsp;:&nbsp;-
+                            p खालील कृती केल्यास उमेदवारी तत्काळ रद्द केली जाईल व कायदेशीर कारवाई केली जाऊ शकते:
+                            ol
+                                li दुसऱ्याच्या नावाने परीक्षा देणे (Impersonation).
+                                li कोणत्याही प्रकारे मदत घेणे किंवा देण्याचा प्रयत्न करणे.
+                                li मोबाइल फोन, स्मार्टवॉच, ब्लूटूथ किंवा इतर संवाद साधणारी उपकरणे वापरणे.
+                                li प्रश्नपत्रिका किंवा उत्तरांचे स्क्रीनशॉट, फोटो काढणे किंवा कोणतीही रेकॉर्डिंग करणे.
+                                li परीक्षेदरम्यान अनधिकृत वेबसाइट्स किंवा माहिती वापरणे.
+                                li अपशब्द वापरणे, गैरवर्तन करणे किंवा परीक्षेच्या कर्मचाऱ्यांशी वाद घालणे.
+                                li निरीक्षकांना धमकावणे किंवा त्यांना त्रास देणे.
+                            p परीक्षा अधीक्षकास गैरवर्तन करणाऱ्या उमेदवारास परीक्षा हॉलमधून बाहेर काढण्याचा पूर्ण अधिकार आहे. अशा उमेदवारास लेखी स्पष्टीकरण द्यावे लागेल आणि भविष्यातील परीक्षेस प्रतिबंध लावला जाऊ शकतो.
+                            
+
+
+                            hr
+                            h2.instruction-heading कडक बंदी&nbsp;:&nbsp;-
+                            ol 
+                                li तंबाखू किंवा सुपारी सेवन करणे, मद्यपान करणे परीक्षा केंद्र परिसरात पूर्णतः बंदी आहे.
+                                li मोबाइल फोन, कॅमेरा किंवा तत्सम उपकरणे परीक्षा केंद्रात आणणे किंवा वापरणे पूर्णतः निषिद्ध आहे.
+                                li कोणत्याही प्रकारचा गैरप्रकार आढळल्यास उमेदवारी तत्काळ रद्द केली जाईल.
+                            
+                            p सर्व उमेदवारांनी सर्व सूचना काळजीपूर्वक वाचाव्यात आणि पूर्णतः पालन करावे. नियमभंग केल्यास उमेदवारी रद्द होऊ शकते व कायदेशीर कारवाई होऊ शकते.
+
+
+
+
+
+                        //- old marathi
+                        //- #marathi.hide.col-xs-12.col-sm-12.col-md-12.col-lg-12.set-bor(style='margin-top: 9px; padding: 1rem 3rem;')
+                            h2.instruction-heading महत्वाच्या सूचना&nbsp;:&nbsp;-
                             ol
                                 li  उमेदवारांनी कॅल्क्युलेटर, इलेक्ट्रानिक वॉच, ब्ल्युटूथ, मोबाईल फोन, 
                                     |पेजर अथवा अन्य साहित्य किंवा इतर कोणत्याही प्रकारचे कागदपत्रे परीक्षा केंद्राच्या आवारात आणू नयेत.
@@ -180,7 +260,7 @@ block content
                                         strong #{test_info.exam_info.mt_negativ_mark}
                                         strong &nbsp; गुण वजा केला जाईल.
                                 else
-                                    li  प्रत्येक प्रश्नास चुकीचे उत्तर दर्शविल्यास कोणतेही गुण वजा केले जाणार नाहीत.
+                                    li प्रत्येक प्रश्नास चुकीचे उत्तर दर्शविल्यास कोणतेही गुण वजा केले जाणार नाहीत.
                                         strong गुण वजा केले जाणार नाहीत.
 
                                 li  कोणताही प्रतिसाद न दिल्यास एकूण स्कोअरमधून 

@@ -14,6 +14,6 @@ router.get('/check-connection', checkConnectionStatus);
 
 // 2.
 router.get('/primary-to-backup-status', primaryToBackupStatus);
-router.post('/upload-file', fileUpload(), saveUploadedFile);
+router.post('/upload-file', saveUploadedFile);
 
 module.exports = router;

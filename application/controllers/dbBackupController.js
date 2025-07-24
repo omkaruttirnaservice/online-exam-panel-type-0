@@ -3,6 +3,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const momentTz = require('moment-timezone');
 const FormData = require('form-data');
+const { default: axios } = require('axios');
 
 const __PROJECT_ROOT = path.resolve('');
 const DIR = {
@@ -158,18 +159,11 @@ const dbBackupController = {
                 formData.append('file', file);
 
                 const URL = `${BACKUP_SERVER_IP}/upload-file`;
-                const response = await fetch(URL, {
-                    method: 'POST',
-                    body: formData,
+
+                const response = await axios.post(`${BACKUP_SERVER_IP}/upload-file`, formData, {
                     headers: formData.getHeaders(),
                 });
-
                 console.log({ response });
-                const json = await response.json();
-                console.log(json);
-                if (!response.ok) {
-                    throw new Error('Unable to upload db backup to server');
-                }
             } catch (error) {
                 console.log(error);
                 reject({
@@ -181,10 +175,20 @@ const dbBackupController = {
     },
 
     saveUploadedFile(req, res, next) {
-        console.log('Inside save upload file');
         try {
-            const file = req.files;
-            console.log({ file });
+            if (!req.files || !req.files.file) {
+                return res.status(400).json({ call: 0, message: 'No file uploaded' });
+            }
+
+            const uploadedFile = req.files.file;
+            console.log(`✅ Received: ${uploadedFile.name}, size: ${uploadedFile.size} bytes`);
+
+            uploadedFile.mv(path.join(DIR.DB_BACKUP, uploadedFile.name), (err) => {
+                if (err) {
+                    return res.status(500).json({ call: 0, message: 'Save failed' });
+                }
+                res.json({ call: 1, message: 'File uploaded successfully' });
+            });
         } catch (error) {
             console.log(error);
             return res.status(500).json({

@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const momentTz = require('moment-timezone');
-const FormData = require('form-data')
+const FormData = require('form-data');
 
 const __PROJECT_ROOT = path.resolve('');
 const DIR = {
@@ -163,12 +163,15 @@ const dbBackupController = {
                     body: formData,
                     headers: formData.getHeaders(),
                 });
+
+                console.log({ response });
+                const json = await response.json();
+                console.log(json);
                 if (!response.ok) {
                     throw new Error('Unable to upload db backup to server');
                 }
-                const json = await response.json();
-                console.log(json);
             } catch (error) {
+                console.log(error);
                 reject({
                     call: 0,
                     message: error?.message || 'Unable to upload db backup to server',
@@ -178,10 +181,12 @@ const dbBackupController = {
     },
 
     saveUploadedFile(req, res, next) {
+        console.log('Inside save upload file');
         try {
             const file = req.files;
             console.log({ file });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({
                 call: 0,
                 message: error?.message || 'Unable to upload db backup to server',

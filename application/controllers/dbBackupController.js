@@ -150,7 +150,7 @@ const dbBackupController = {
     async uploadToBackupServer(filePath) {
         return new Promise(async (resolve, reject) => {
             try {
-                const file = fs.createReadStream(filePath, 'utf8');
+                const file = fs.createReadStream(filePath);
 
                 const formData = new FormData();
 
@@ -160,9 +160,7 @@ const dbBackupController = {
                 const response = await fetch(URL, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        contentType: 'multipart/form-data',
-                    },
+                    headers: formData.getHeaders(),
                 });
                 if (!response.ok) {
                     throw new Error('Unable to upload db backup to server');

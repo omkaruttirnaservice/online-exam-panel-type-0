@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var commenMiddleware = require('./middleware');
 var indexController = require('../application/controllers/indexConroller');
+var dbBackupRouter = require('./dbBackupRouter');
+router.use(dbBackupRouter);
 
 router.get('/api-check', (req, res, next) => {
     return res.status(200).json({

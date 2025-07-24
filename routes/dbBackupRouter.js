@@ -3,6 +3,7 @@ const {
     primaryToBackupStatus,
     connectBackupServer,
     checkConnectionStatus,
+    saveUploadedFile,
 } = require('../application/controllers/dbBackupController');
 
 const router = require('express').Router();
@@ -13,6 +14,6 @@ router.get('/check-connection', checkConnectionStatus);
 
 // 2.
 router.get('/primary-to-backup-status', primaryToBackupStatus);
-router.post('/upload-file', fileUpload(), )
+router.post('/upload-file', fileUpload(), saveUploadedFile);
 
 module.exports = router;

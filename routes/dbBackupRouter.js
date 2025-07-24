@@ -1,3 +1,4 @@
+const fileUpload = require('express-fileupload');
 const {
     primaryToBackupStatus,
     connectBackupServer,
@@ -12,5 +13,6 @@ router.get('/check-connection', checkConnectionStatus);
 
 // 2.
 router.get('/primary-to-backup-status', primaryToBackupStatus);
+router.post('/upload-file', fileUpload(), )
 
 module.exports = router;

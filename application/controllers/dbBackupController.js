@@ -13,8 +13,11 @@ const DIR = {
 
 let IS_CONNECTED_TO_BACKUP_SERVER = false;
 let BACKUP_SERVER_IP = null;
-let serverNumber = null;
-let centerCode = null;
+let serverNumber = 1;
+let centerCode = 101;
+
+// let serverNumber = null;
+// let centerCode = null;
 
 const getTimestamp = () => {
     return momentTz().tz('Asia/Kolkata').format('YYYY_MM_DD_HH_mm_ss');
@@ -56,13 +59,14 @@ const dbBackupController = {
             }
 
             const URL = `${BACKUP_SERVER_IP}/primary-to-backup-status`;
+            console.log({ URL });
             const resp = await fetch(URL);
             if (!resp.ok) {
                 throw new Error('Failed to connect to backup server');
             }
-            const json = await res.json();
-            console.log({ json });
+            await resp.json();
             IS_CONNECTED_TO_BACKUP_SERVER = true;
+            await dbBackupController.backupDb();
             return res.status(200).json({
                 call: 1,
                 message: 'Connected',
@@ -78,101 +82,104 @@ const dbBackupController = {
     },
 
     backupDb() {
-        const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
-        const BACKUP_DIR = DIR.DB_BACKUP;
-        const DATABASE_NAME = process.env.DB_DATABASE;
-        const backupFileName = `backup_${DATABASE_NAME}_cc_${centerCode}_server_${serverNumber}_${getTimestamp()}.sql`;
-        let backupFilePath = path.join(BACKUP_DIR, backupFileName);
-        let gZipFileName = null;
-        let gZipFilePath = null;
+        return new Promise((resolve, reject) => {
+            const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
+            const BACKUP_DIR = DIR.DB_BACKUP;
+            const DATABASE_NAME = process.env.DB_DATABASE;
+            const backupFileName = `backup_${DATABASE_NAME}_cc_${centerCode}_server_${serverNumber}_${getTimestamp()}.sql`;
+            let backupFilePath = path.join(BACKUP_DIR, backupFileName);
 
-        let encFileName = null;
-        let encFilePath = null;
+            const dumpWriteStream = fs.createWriteStream(backupFilePath);
 
-        const dumpWriteStream = fs.createWriteStream(backupFilePath);
-
-        try {
-            if (!fs.existsSync(BACKUP_DIR)) {
-                console.log('Info: checking if backup dir exsists');
-                fs.mkdirSync(BACKUP_DIR, { recursive: true });
-            }
-            if (!fs.existsSync(mySqlConfigPath)) {
-                console.log("Info: config file doesn't exsists");
-                return;
-            }
-            const dumpCommand = spawn('mysqldump', [
-                `--defaults-extra-file=${mySqlConfigPath}`,
-                `${DATABASE_NAME}`,
-            ]);
-
-            dumpCommand.stdout.pipe(dumpWriteStream);
-
-            dumpCommand.stderr.on('data', (data) => {
-                console.log(data);
-            });
-
-            dumpCommand.on('error', (err) => {
-                console.log(err);
-            });
-
-            dumpCommand.on('close', (dumpCode) => {
-                console.log(dumpCode, '=dumpCode');
-                if (dumpCode !== 0) {
+            try {
+                if (!fs.existsSync(BACKUP_DIR)) {
+                    console.log('Info: checking if backup dir exsists');
+                    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+                }
+                if (!fs.existsSync(mySqlConfigPath)) {
+                    console.log("Info: config file doesn't exsists");
                     return;
                 }
-            });
+                const dumpCommand = spawn('mysqldump', [
+                    `--defaults-extra-file=${mySqlConfigPath}`,
+                    `${DATABASE_NAME}`,
+                ]);
 
-            dumpWriteStream.on('finish', () => {
-                const dumpStats = fs.statSync(backupFilePath);
-                console.log(`✅ Dump completed: ${getBytesToMB(dumpStats.size)} MB`);
-                // prettier-ignore
-                console.log(`Database Backup completed with file size: ${getBytesToMB(dumpStats.size)} MB\n`)
-                console.log(`File path: ${backupFilePath}`);
+                dumpCommand.stdout.pipe(dumpWriteStream);
 
-                console.log('Starting gzip file...');
-                const gzipCommand = spawn('gzip', ['-k', `${backupFilePath}`]);
-
-                gzipCommand.on('close', async (gzipCode) => {
-                    if (gzipCode !== 0) {
-                        console.log(`Gzip failed with code ${gzipCode}\n`);
-                        return;
-                    }
-                    console.log(`✅ Gzip successful`);
-
-                    gZipFileName = `${backupFileName}.gz`;
-                    gZipFilePath = path.join(BACKUP_DIR, gZipFileName);
-
-                    encFileName = `${gZipFileName}.enc`;
-                    encFilePath = path.join(BACKUP_DIR, encFileName);
-
-                    if (!fs.existsSync(gZipFilePath)) {
-                        console.log('Info: Backup doesnt exsists...');
-                        // sendAdminMessage(
-                        //     'backup-connection-status',
-                        //     'Gzipped backup file doesnt exsists'
-                        // );
-                        return;
-                    }
-
-                    // sendAdminMessage('backup-connection-status', 'Encrypting backup file...');
-
-                    await encryptFile(gZipFilePath, encFilePath, '1234');
-
-                    const fileBuffer = fs.readFileSync(encFilePath);
-
-                    // sendMessageToBackupServer('send-backup', {
-                    //     fileName: path.basename(encFilePath),
-                    //     file: fileBuffer,
-                    // });
+                dumpCommand.stderr.on('data', (data) => {
+                    console.log(data);
                 });
 
-                gzipCommand.on('error', (err) => {
+                dumpCommand.on('error', (err) => {
                     console.log(err);
-                    console.log('Gzip process error: ' + err.message + '\n');
                 });
-            });
+
+                dumpCommand.on('close', (dumpCode) => {
+                    console.log(dumpCode, '=dumpCode');
+                    if (dumpCode !== 0) {
+                        return;
+                    }
+                });
+
+                dumpWriteStream.on('finish', () => {
+                    const dumpStats = fs.statSync(backupFilePath);
+                    console.log(`✅ Dump completed: ${getBytesToMB(dumpStats.size)} MB`);
+                    // prettier-ignore
+                    console.log(`Database Backup completed with file size: ${getBytesToMB(dumpStats.size)} MB\n`)
+                    console.log(`File path: ${backupFilePath}`);
+                    dbBackupController.uploadToBackupServer(backupFilePath);
+                    resolve({
+                        call: 1,
+                        message: `Generated db backup successful`,
+                    });
+                });
+            } catch (error) {
+                reject({
+                    call: 0,
+                    message: error?.message || 'Error while db backup',
+                });
+            }
+        });
+    },
+
+    async uploadToBackupServer(filePath) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const file = fs.createReadStream(filePath, 'utf8');
+
+                const formData = new FormData();
+
+                formData.append('file', file);
+
+                const URL = `${BACKUP_SERVER_IP}/upload-file`;
+                const response = await fetch(URL, {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (!response.ok) {
+                    throw new Error('Unable to upload db backup to server');
+                }
+                const json = await response.json();
+                console.log(json);
+            } catch (error) {
+                reject({
+                    call: 0,
+                    message: error?.message || 'Unable to upload db backup to server',
+                });
+            }
+        });
+    },
+
+    saveUploadedFile(req, res, next) {
+        try {
+            const file = req.files;
+            console.log({ file });
         } catch (error) {
-            console.log(error);
+            return res.status(500).json({
+                call: 0,
+                message: error?.message || 'Unable to upload db backup to server',
+            });
         }
     },
 };

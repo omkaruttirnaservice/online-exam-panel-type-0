@@ -160,6 +160,9 @@ const dbBackupController = {
                 const response = await fetch(URL, {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        contentType: 'multipart/form-data',
+                    },
                 });
                 if (!response.ok) {
                     throw new Error('Unable to upload db backup to server');

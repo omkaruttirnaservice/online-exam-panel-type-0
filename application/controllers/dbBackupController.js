@@ -17,6 +17,8 @@ let IS_CONNECTED_TO_BACKUP_SERVER = false;
 let BACKUP_SERVER_IP = null;
 let serverNumber = 1;
 let centerCode = 101;
+let backupInterval = null;
+let backupIntervalTime = 5000;
 
 // let serverNumber = null;
 // let centerCode = null;
@@ -61,14 +63,18 @@ const dbBackupController = {
             }
 
             const URL = `${BACKUP_SERVER_IP}/primary-to-backup-status`;
-            console.log({ URL });
             const resp = await fetch(URL);
             if (!resp.ok) {
                 throw new Error('Failed to connect to backup server');
             }
-            await resp.json();
+
             IS_CONNECTED_TO_BACKUP_SERVER = true;
+
+            // take initial backup when connected
             await dbBackupController.backupDb();
+
+            // start the interval for backup automatically
+            dbBackupController.runBackupInterval();
             return res.status(200).json({
                 call: 1,
                 message: 'Connected',
@@ -160,10 +166,12 @@ const dbBackupController = {
 
                 const URL = `${BACKUP_SERVER_IP}/upload-file`;
 
-                const response = await axios.post(`${BACKUP_SERVER_IP}/upload-file`, formData, {
+                const response = await axios.post(URL, formData, {
                     headers: formData.getHeaders(),
                 });
+
                 console.log({ response });
+                resolve(response);
             } catch (error) {
                 console.log(error);
                 reject({
@@ -197,5 +205,15 @@ const dbBackupController = {
             });
         }
     },
+
+    runBackupInterval() {
+        if (backupInterval) {
+            clearInterval(backupInterval);
+        }
+        setInterval(async () => {
+            await dbBackupController.backupDb();
+        }, backupIntervalTime);
+    },
 };
+
 module.exports = dbBackupController;

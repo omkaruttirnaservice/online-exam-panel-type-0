@@ -42,6 +42,10 @@ const dbBackupController = {
 
     checkConnectionStatus: (req, res, next) => {
         // This API will be used from client side on same server
+        if (!IS_CONNECTED_TO_BACKUP_SERVER) {
+            console.log('Info: clearing backup interval...');
+            clearInterval(backupInterval);
+        }
         return res.status(200).json({
             call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
             message: '',
@@ -210,9 +214,11 @@ const dbBackupController = {
         if (backupInterval) {
             clearInterval(backupInterval);
         }
-        setInterval(async () => {
-            await dbBackupController.backupDb();
-        }, backupIntervalTime);
+        if (IS_CONNECTED_TO_BACKUP_SERVER) {
+            setInterval(async () => {
+                await dbBackupController.backupDb();
+            }, backupIntervalTime);
+        }
     },
 };
 

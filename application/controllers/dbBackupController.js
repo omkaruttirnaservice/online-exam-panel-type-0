@@ -122,13 +122,13 @@ const dbBackupController = {
                     }
                 });
 
-                dumpWriteStream.on('finish', () => {
+                dumpWriteStream.on('finish', async () => {
                     const dumpStats = fs.statSync(backupFilePath);
                     console.log(`✅ Dump completed: ${getBytesToMB(dumpStats.size)} MB`);
                     // prettier-ignore
                     console.log(`Database Backup completed with file size: ${getBytesToMB(dumpStats.size)} MB\n`)
                     console.log(`File path: ${backupFilePath}`);
-                    dbBackupController.uploadToBackupServer(backupFilePath);
+                    await dbBackupController.uploadToBackupServer(backupFilePath);
                     resolve({
                         call: 1,
                         message: `Generated db backup successful`,

@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const momentTz = require('moment-timezone');
+const FormData = require('form-data')
 
 const __PROJECT_ROOT = path.resolve('');
 const DIR = {

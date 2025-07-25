@@ -52,9 +52,16 @@ block content
                                         input.form-control#backup-ip-input(type='text',name="backup_ip",require='', value="192.168.1.23:3050" placeholder='eg. 192.168.X.X:3XX0')
                                     
                                     button.btn.btn-primary#connect-backup-server(type='button') Connect
+                                    
+                            .form-group
+                                div(style="display: flex; align-items: end; gap: 10px;")
+                                    div
+                                        label(for="restore-db-file") Restore DB 
+                                        input#restore-db-file.form-control(type='file') 
                             
+                                    button.btn.btn-success#restore-db-btn(type='button' ) Restore 
 
-                            button.btn.btn-primary(type='submit') Sign In
+                            button.btn.btn-primary.btn-sm(type='submit') Sign In
                             a.btn.btn-danger.pull-right.btn-sm(data-toggle='modal', href='#modalIdIp',style="") Set Master IP
                             a.btn.btn-default.pull-right.btn-sm(data-toggle='modal', href='#modal-id',style="") Request For Login
                 

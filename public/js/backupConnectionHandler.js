@@ -108,4 +108,43 @@ window.addEventListener('load', function () {
             messageBoxEl.html(`<p></p>`);
         }, 2500);
     }
+
+    $(document).on('click', '#restore-db-btn', function () {
+        const thisBtn = $(this);
+        const formData = new FormData();
+
+        $('#restore-db-btn').attr('disabled', false);
+        let file = document.getElementById('restore-db-file').files[0];
+        if (!file) {
+            alert('Please select file to restore');
+            return;
+        }
+        thisBtn.attr('disabled', true);
+        thisBtn.text('Restoring');
+        formData.set('backup_file', file);
+        console.log(file);
+
+        // clearing up the backupinterval
+        clearInterval(backupInterval);
+
+        // restore backup functionality
+        $.ajax({
+            url: '/restore',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                thisBtn.attr('disabled', false);
+                thisBtn.text('Restore');
+                console.log(data);
+                alert(data?.message || 'Restore successful');
+            },
+            error: function (error) {
+                thisBtn.attr('disabled', false);
+                thisBtn.text('Restore');
+                console.log(error);
+            },
+        });
+    });
 });

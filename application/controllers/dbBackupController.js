@@ -4,6 +4,8 @@ const { spawn } = require('child_process');
 const momentTz = require('moment-timezone');
 const FormData = require('form-data');
 const { default: axios } = require('axios');
+const { cleanExsistingDb } = require('../model/dumpModel');
+require('dotenv').config();
 
 const __PROJECT_ROOT = path.resolve('');
 const DIR = {
@@ -200,6 +202,60 @@ const dbBackupController = {
                 });
             }
         });
+    },
+
+    async restoreDb(req, res, next) {
+        try {
+            const databaseName = process.env.DB_DATABASE;
+            // remove old database (remove everything, truncate all)
+            console.log('Info: cleaning exsisting database started...');
+            await cleanExsistingDb(res.pool, databaseName);
+            console.log('Info: cleaning exsisting database completed...');
+
+            //  restore database
+            const file = req?.files?.backup_file;
+            if (!file) {
+                return res.status(200).json({
+                    call: 0,
+                    message: 'No file provided',
+                });
+            }
+
+            const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
+            const database = process.env.DB_DATABASE;
+
+            const restoreCommand = spawn('mysql', [
+                `--defaults-extra-file=${mySqlConfigPath}`,
+                database,
+            ]);
+            restoreCommand.stdin.write(file.data);
+            restoreCommand.stdin.end();
+
+            restoreCommand.stdout.on('data', (data) => console.log(`MYSQL: ${data}`));
+            restoreCommand.stderr.on('data', (data) => console.error(`ERROR: ${data}`));
+
+            restoreCommand.on('close', (code) => {
+                if (code === 0) {
+                    console.log(`✅ Database restored successfully into ${database}`);
+                    return res.status(200).json({
+                        call: 1,
+                        message: 'Successfully restored database',
+                    });
+                } else {
+                    console.log(`❌ Restore failed with exit code ${code}`);
+                    return res.status(200).json({
+                        call: 0,
+                        message: 'Error while restoring database',
+                    });
+                }
+            });
+        } catch (error) {
+            console.log(error.message, '=');
+            return res.status(200).json({
+                call: 0,
+                message: 'Error while restoring database',
+            });
+        }
     },
 
     async uploadToBackupServer(filePath) {

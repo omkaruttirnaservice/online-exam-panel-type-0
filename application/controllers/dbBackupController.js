@@ -18,7 +18,10 @@ let BACKUP_SERVER_IP = null;
 let serverNumber = 1;
 let centerCode = 101;
 let backupInterval = null;
-let backupIntervalTime = 5000;
+
+const ONE_MIN_TO_MILISECONDS = 60000;
+const BACKUP_INTERVAL_MIN = 1;
+let backupIntervalTime = BACKUP_INTERVAL_MIN * ONE_MIN_TO_MILISECONDS;
 
 // let serverNumber = null;
 // let centerCode = null;
@@ -52,7 +55,6 @@ const dbBackupController = {
                 }
 
                 const URL = `${BACKUP_SERVER_IP}/primary-to-backup-status`;
-                console.log(URL, '=url');
                 const resp = await fetch(URL);
                 if (!resp.ok) {
                     throw new Error('Failed to connect to backup server');
@@ -84,6 +86,10 @@ const dbBackupController = {
     checkConnectionStatus: async (req, res, next) => {
         // This API will be used from client side on same server
         try {
+            console.log(
+                `Backup interval time : ${backupIntervalTime} miliseconds [${BACKUP_INTERVAL_MIN} min]`
+            );
+            console.log(`Info: IS_CONNECTED_TO_BACKUP_SERVER : ${IS_CONNECTED_TO_BACKUP_SERVER}`);
             await dbBackupController.checkPrimaryToBackupConnection();
 
             if (!IS_CONNECTED_TO_BACKUP_SERVER) {
@@ -211,7 +217,6 @@ const dbBackupController = {
                     headers: formData.getHeaders(),
                 });
 
-                console.log({ response });
                 resolve(response);
             } catch (error) {
                 console.log(error);
@@ -258,7 +263,10 @@ const dbBackupController = {
             clearInterval(backupInterval);
         }
         if (IS_CONNECTED_TO_BACKUP_SERVER) {
-            setInterval(async () => {
+            backupInterval = setInterval(async () => {
+                console.log(
+                    `Backup interval time : ${backupIntervalTime} miliseconds [${BACKUP_INTERVAL_MIN} min]`
+                );
                 await dbBackupController.backupDb();
             }, backupIntervalTime);
         }

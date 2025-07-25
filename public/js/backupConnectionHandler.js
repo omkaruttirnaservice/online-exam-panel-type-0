@@ -8,6 +8,9 @@ window.addEventListener('load', function () {
     const messageBoxEl = $('.message-box');
     // const connectBackupServerBtnEl = $('#connect-backup-server');
 
+    // initially set status
+    setStatus(isBackupServerConnected);
+
     function checkBackupConnectedOrNot() {
         $.ajax({
             url: '/check-connection',

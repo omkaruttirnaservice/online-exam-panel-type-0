@@ -52,10 +52,14 @@ block content
                                         input.form-control#backup-ip-input(type='text',name="backup_ip",require='', value="192.168.1.23:3050" placeholder='eg. 192.168.X.X:3XX0')
                                     
                                     button.btn.btn-primary#connect-backup-server(type='button') Connect
+                            
 
                             button.btn.btn-primary(type='submit') Sign In
                             a.btn.btn-danger.pull-right.btn-sm(data-toggle='modal', href='#modalIdIp',style="") Set Master IP
                             a.btn.btn-default.pull-right.btn-sm(data-toggle='modal', href='#modal-id',style="") Request For Login
+                
+                .message-box.bg-danger(style="padding: 5px;") 
+
                      
 block inline_css
     style.
@@ -117,6 +121,7 @@ block inline_js
                     success:function(data){
                         removeLoading();
                         if(data.call == 1){
+
                             alert('IP Address URL SET Set Successfully');
                             return false;
                         }
@@ -136,38 +141,9 @@ block inline_js
                 });
             });                                        
 
+        })
 
-            $(document).on('click', '#connect-backup-server', function() {
-                let backupIP = $("#backup-ip-input").val()
-                console.log({backupIP})
-
-                if (backupIP.trim() == '') {
-                    alert("Please enter valid backup server IP")
-                }
-
-                $.ajax({
-                    "url": "/connect-backup-server",
-                    "type": "POST",
-                    "data":{
-                            backup_ip:'http://'+backupIP
-                        },
-                    success:function(data){
-                        console.log(data)
-                        alert(data.message)
-                        if (data.call == 0) {
-                            return
-                        }
-                        removeLoading();
-                    },error:function(error){
-                        removeLoading();
-                        alert('Server Error');
-                    }
-                });
-
-            })
-
-
-        });
+            
 
 
        

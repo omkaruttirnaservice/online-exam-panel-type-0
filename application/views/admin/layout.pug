@@ -32,6 +32,7 @@ html
     script(src="/plugins/jQuery/jQuery-2.1.4.min.js")
     script(src="/javascripts/bootstrap/js/bootstrap.min.js")
     script(src="/javascripts/alters/js/lobibox.min.js")  
+    script(src="/js/backupConnectionHandler.js")
     
     script.
       function getUrl(){return '/admin/';}
@@ -63,28 +64,6 @@ html
             });
       }
 
-      let IS_BACKUP_SERVER_CONNECTED = false
-      const BACKUP_CONNECTION_CHECK_INTERVAL_TIMER = 2000
-
-      function checkBackupConnectedOrNot() {
-        $.ajax({
-            "url": "/check-connection",
-            "type": "GET",
-            success:function(data){
-                console.log(data)
-                IS_BACKUP_SERVER_CONNECTED =  data?.status || false
-                removeLoading();
-            },error:function(error){
-                removeLoading();
-                alert('Server Error');
-            }
-        });
-      }
-
-      setInterval(()=>{
-        checkBackupConnectedOrNot()
-      }, BACKUP_CONNECTION_CHECK_INTERVAL_TIMER)
-     
     block inline_js
 
     block js_link

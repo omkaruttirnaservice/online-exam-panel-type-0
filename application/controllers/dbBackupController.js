@@ -40,39 +40,77 @@ const dbBackupController = {
         });
     },
 
-    checkConnectionStatus: (req, res, next) => {
-        // This API will be used from client side on same server
-        if (!IS_CONNECTED_TO_BACKUP_SERVER) {
-            console.log('Info: clearing backup interval...');
-            clearInterval(backupInterval);
-        }
-        return res.status(200).json({
-            call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
-            message: '',
-            status: IS_CONNECTED_TO_BACKUP_SERVER,
+    checkPrimaryToBackupConnection() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!BACKUP_SERVER_IP) {
+                    reject({
+                        call: 0,
+                        message: 'Please enter backup server IP',
+                    });
+                    return;
+                }
+
+                const URL = `${BACKUP_SERVER_IP}/primary-to-backup-status`;
+                console.log(URL, '=url');
+                const resp = await fetch(URL);
+                if (!resp.ok) {
+                    throw new Error('Failed to connect to backup server');
+                }
+
+                IS_CONNECTED_TO_BACKUP_SERVER = true;
+
+                resolve({
+                    call: 1,
+                    message: 'Connection successful',
+                });
+            } catch (error) {
+                IS_CONNECTED_TO_BACKUP_SERVER = false;
+                let _message = null;
+                if (error.message == 'fetch failed') {
+                    console.log({ message: error.message });
+                    _message = 'Failed to connect to backup server';
+                } else {
+                    _message = error?.message;
+                }
+                reject({
+                    call: 0,
+                    message: _message || 'Error while connecting',
+                });
+            }
         });
+    },
+
+    checkConnectionStatus: async (req, res, next) => {
+        // This API will be used from client side on same server
+        try {
+            await dbBackupController.checkPrimaryToBackupConnection();
+
+            if (!IS_CONNECTED_TO_BACKUP_SERVER) {
+                console.log('Info: clearing backup interval...');
+                clearInterval(backupInterval);
+            }
+
+            return res.status(200).json({
+                call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
+                message: '',
+                status: IS_CONNECTED_TO_BACKUP_SERVER,
+            });
+        } catch (error) {
+            return res.status(200).json({
+                call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
+                message: '',
+                status: IS_CONNECTED_TO_BACKUP_SERVER,
+            });
+        }
     },
 
     async connectBackupServer(req, res, next) {
         // This will update the backup db IP
         try {
-            console.log(req.body);
-
             BACKUP_SERVER_IP = req.body.backup_ip;
-            if (!BACKUP_SERVER_IP) {
-                return res.status(200).json({
-                    call: 0,
-                    message: 'Please enter backup server IP',
-                });
-            }
-
-            const URL = `${BACKUP_SERVER_IP}/primary-to-backup-status`;
-            const resp = await fetch(URL);
-            if (!resp.ok) {
-                throw new Error('Failed to connect to backup server');
-            }
-
-            IS_CONNECTED_TO_BACKUP_SERVER = true;
+            // first check connection with backup
+            await dbBackupController.checkPrimaryToBackupConnection();
 
             // take initial backup when connected
             await dbBackupController.backupDb();
@@ -85,7 +123,6 @@ const dbBackupController = {
             });
         } catch (error) {
             IS_CONNECTED_TO_BACKUP_SERVER = false;
-            console.log(error);
             return res.status(200).json({
                 call: 0,
                 message: error?.message || 'Error while connecting',
@@ -178,9 +215,15 @@ const dbBackupController = {
                 resolve(response);
             } catch (error) {
                 console.log(error);
+                let _message = null;
+                if (error.code == 'ERR_INVALID_URL') {
+                    _message = 'Invalid url';
+                } else {
+                    _message = error?.message;
+                }
                 reject({
                     call: 0,
-                    message: error?.message || 'Unable to upload db backup to server',
+                    message: _message || 'Unable to upload db backup to server',
                 });
             }
         });

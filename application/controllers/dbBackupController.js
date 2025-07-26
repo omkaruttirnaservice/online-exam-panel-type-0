@@ -297,7 +297,7 @@ const dbBackupController = {
             }
 
             if (!fs.existsSync(DIR.DB_BACKUP)) {
-                fs.mkdirSync(DIR.BACKUP_DIR, { recursive: true });
+                fs.mkdirSync(DIR.DB_BACKUP, { recursive: true });
             }
 
             const uploadedFile = req.files.file;

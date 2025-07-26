@@ -221,6 +221,7 @@ const dbBackupController = {
                 });
             }
 
+            console.log('Info: Started restoring database...');
             const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
             const database = process.env.DB_DATABASE;
 

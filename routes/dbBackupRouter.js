@@ -1,23 +1,17 @@
 const fileUpload = require('express-fileupload');
-const {
-    primaryToBackupStatus,
-    connectBackupServer,
-    checkConnectionStatus,
-    saveUploadedFile,
-    restoreDb,
-} = require('../application/controllers/dbBackupController');
 const { checkForPoolConnection } = require('./middleware');
+const { dbBackupController } = require('../application/controllers/dbBackupController');
 
 const router = require('express').Router();
 
 // 1.
-router.post('/connect-backup-server', connectBackupServer);
-router.get('/check-connection', checkConnectionStatus);
+router.post('/connect-backup-server', dbBackupController.connectBackupServer);
+router.get('/check-connection', dbBackupController.checkConnectionStatus);
 
-router.post('/restore', checkForPoolConnection, restoreDb);
+router.post('/restore', checkForPoolConnection, dbBackupController.restoreDb);
 
 // 2.
-router.get('/primary-to-backup-status', primaryToBackupStatus);
-router.post('/upload-file', saveUploadedFile);
+router.get('/primary-to-backup-status', dbBackupController.primaryToBackupStatus);
+router.post('/upload-file', dbBackupController.saveUploadedFile);
 
 module.exports = router;

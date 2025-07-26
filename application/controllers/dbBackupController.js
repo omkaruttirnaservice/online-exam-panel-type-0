@@ -143,7 +143,7 @@ const dbBackupController = {
             const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
             const BACKUP_DIR = DIR.DB_BACKUP;
             const DATABASE_NAME = process.env.DB_DATABASE;
-            const backupFileName = `backup_${DATABASE_NAME}_cc_${centerCode}_server_${serverNumber}_${getTimestamp()}.sql`;
+            const backupFileName = `backup_cc_${centerCode}_${getTimestamp()}.sql`;
             let backupFilePath = path.join(BACKUP_DIR, backupFileName);
 
             const dumpWriteStream = fs.createWriteStream(backupFilePath);
@@ -296,6 +296,10 @@ const dbBackupController = {
                 return res.status(400).json({ call: 0, message: 'No file uploaded' });
             }
 
+            if (!fs.existsSync(DIR.DB_BACKUP)) {
+                fs.mkdirSync(DIR.BACKUP_DIR, { recursive: true });
+            }
+
             const uploadedFile = req.files.file;
             console.log(`✅ Received: ${uploadedFile.name}, size: ${uploadedFile.size} bytes`);
 
@@ -329,4 +333,24 @@ const dbBackupController = {
     },
 };
 
-module.exports = dbBackupController;
+const createMyCnfFile = () => {
+    console.log('➡️ Creating .my.cnf file');
+    const fs = require('fs');
+    const myCnfPath = DIR.MY_SQL_CNF_PATH;
+
+    if (fs.existsSync(myCnfPath)) {
+        fs.unlinkSync(myCnfPath);
+    }
+
+    const fileConfig = `
+        [client]
+        user='${process.env.DB_USER}'
+        password="${process.env.DB_PASSWORD}"
+        host="${process.env.DB_HOST}"
+    `.replace(/^\s+/gm, '');
+
+    fs.writeFileSync(myCnfPath, fileConfig);
+    console.log('✅ Completed Creating .my.cnf file');
+};
+
+module.exports = { dbBackupController, createMyCnfFile };

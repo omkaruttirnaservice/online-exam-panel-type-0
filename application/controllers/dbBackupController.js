@@ -102,12 +102,14 @@ const dbBackupController = {
                 call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
                 message: '',
                 status: IS_CONNECTED_TO_BACKUP_SERVER,
+                backupConnectedIP: BACKUP_SERVER_IP,
             });
         } catch (error) {
             return res.status(200).json({
                 call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
-                message: '',
+                message: error?.message || '',
                 status: IS_CONNECTED_TO_BACKUP_SERVER,
+                backupConnectedIP: BACKUP_SERVER_IP,
             });
         }
     },

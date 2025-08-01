@@ -15,5 +15,10 @@
         a.btn.pull-right(href='#',style='margin-top:8px')
             strong #{c_name}
         a.btn.pull-right(href='#',style='')
-            span Backup Server 
-            span#backup-server-status-navbar.btn.btn-sm.btn-primary Disconnected
+            .d-flex
+                div
+                    span Backup Server 
+                div
+                    span.status-box Disconnected
+                    |&nbsp;&vert;&nbsp;
+                    span#backup-ip-display

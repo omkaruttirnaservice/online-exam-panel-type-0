@@ -6,10 +6,26 @@ window.addEventListener('load', function () {
     const backupConnectionCheckIntervalTimer = 2000;
 
     const messageBoxEl = $('.message-box');
-    // const connectBackupServerBtnEl = $('#connect-backup-server');
 
     // initially set status
     setStatus(isBackupServerConnected);
+
+    // start the interval to check connection
+    runCheckConnectionInterval();
+
+    function runCheckConnectionInterval() {
+        backupInterval = setInterval(() => {
+            console.log('Running interval');
+            if (retryCount == maxBackupConnectionRetry) {
+                clearInterval(backupInterval);
+                setMessage('Max retry count reached');
+                setStatus(false);
+                return;
+            }
+            if (!backupInterval) return;
+            checkBackupConnectedOrNot();
+        }, backupConnectionCheckIntervalTimer);
+    }
 
     function checkBackupConnectedOrNot() {
         $.ajax({
@@ -17,49 +33,32 @@ window.addEventListener('load', function () {
             type: 'GET',
             success: function (data) {
                 console.log(data);
-                isBackupServerConnected = data?.status || false;
-                // messageBoxEl.text(data.status ? 'Connected' : 'Not connected');
-                // connectBackupServerBtnEl.text(data.status ? 'Connected' : 'Connect');
-                // connectBackupServerBtnEl.attr('disabled', data.status);
-
-                setStatus(data.status);
-                if (!data.status) {
+                setMessage(data.message);
+                if (!data.backupConnectedIP || !data.status) {
+                    setStatus(false);
+                    setMessage('No backup IP found or backup server not connected');
+                    clearInterval(backupInterval);
                     retryCount++;
+                } else if (data.backupConnectedIP || data.status) {
+                    setMessage('Backup server connected');
+                    setStatus(true);
                 }
+                const ip = data?.backupConnectedIP.replace('http://', '') || '';
+                $('#backup-ip-display').text(ip);
+                $('#backup-ip-input').val(ip);
+                isBackupServerConnected = data?.status || false;
             },
             error: function (error) {
+                setMessage('Retrying to connect...');
                 retryCount++;
                 setStatus(false);
-                // connectBackupServerBtnEl.attr('disabled', false);
-                // connectBackupServerBtnEl.text('Connect');
             },
         });
     }
 
-    $(document).on('keyup', '#backup-ip-input', function () {
-        clearInterval(backupInterval);
-        // connectBackupServerBtnEl.attr('disabled', false);
-        // connectBackupServerBtnEl.text('Connect');
-
-        setStatus(false);
-    });
-
-    backupInterval = setInterval(() => {
-        console.log('Running interval');
-        if (retryCount == maxBackupConnectionRetry) {
-            clearInterval(backupInterval);
-            // connectBackupServerBtnEl.attr('disabled', false);
-            // connectBackupServerBtnEl.text('Connect');
-
-            setStatus(false);
-            return;
-        }
-        if (!backupInterval) return;
-        checkBackupConnectedOrNot();
-    }, backupConnectionCheckIntervalTimer);
-
     // javascript on login page
     $(document).on('click', '#connect-backup-server', function () {
+        clearInterval(backupInterval);
         const thisBtn = $(this);
         let backupIP = $('#backup-ip-input').val();
 
@@ -78,11 +77,13 @@ window.addEventListener('load', function () {
                 backup_ip: 'http://' + backupIP,
             },
             success: function (data) {
+                runCheckConnectionInterval();
                 thisBtn.attr('disabled', false);
                 thisBtn.text('Connect');
-                clearMessage();
+                // clearMessage();
                 console.log(data);
-                messageBoxEl.html(`<p>${data.message}</p>`);
+                setMessage(data.message);
+                // messageBoxEl.html(`<p>${data.message}</p>`);
                 if (data.call == 0) {
                     return;
                 }
@@ -90,17 +91,28 @@ window.addEventListener('load', function () {
             error: function (error) {
                 thisBtn.attr('disabled', false);
                 thisBtn.text('Connect');
-                messageBoxEl.html(`<p>${error?.message || 'Not able to connect'}</p>`);
-                clearMessage();
+                setMessage(error?.message || 'Not able to connect');
+                // messageBoxEl.html(`<p>${error?.message || 'Not able to connect'}</p>`);
+                // clearMessage();
             },
         });
     });
 
     function setStatus(status) {
-        $('.message-box').text(status ? 'Connected' : 'Disconnected');
-        $('#backup-server-status-navbar').text(status ? 'Connected' : 'Disconnected');
-        $('#connect-backup-server').text(status ? 'Connected' : 'Connect');
-        $('#connect-backup-server').attr('disabled', status);
+        $('.status-box').text(status ? 'Connected' : 'Disconnected');
+    }
+
+    function setMessage(status) {
+        let date = new Date();
+
+        $('.message-box').append(
+            `<p>[${date.toLocaleDateString()} | ${date.toLocaleTimeString()}] ${status} </p>`
+        );
+
+        const messageBox = document.querySelector('.message-box');
+        if (messageBox) {
+            messageBox.scrollTop = messageBox.scrollHeight;
+        }
     }
 
     function clearMessage() {

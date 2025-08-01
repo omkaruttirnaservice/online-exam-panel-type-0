@@ -72,7 +72,6 @@ const dbBackupController = {
                 IS_CONNECTED_TO_BACKUP_SERVER = false;
                 let _message = null;
                 if (error.message == 'fetch failed') {
-                    console.log({ message: error.message });
                     _message = 'Failed to connect to backup server';
                 } else {
                     _message = error?.message;
@@ -192,7 +191,9 @@ const dbBackupController = {
                             message: `Generated db backup successful`,
                         });
                     } catch (error) {
-                        console.log({ error });
+                        console.log(
+                            `❎ Error : ${error?.message || 'Error whie uploading db backup file'}`
+                        );
                     }
                 });
             } catch (error) {
@@ -233,7 +234,7 @@ const dbBackupController = {
             restoreCommand.stdin.end();
 
             restoreCommand.stdout.on('data', (data) => console.log(`MYSQL: ${data}`));
-            restoreCommand.stderr.on('data', (data) => console.error(`ERROR: ${data}`));
+            restoreCommand.stderr.on('data', (data) => console.error(`ERROR: Restore failed`));
 
             restoreCommand.on('close', (code) => {
                 if (code === 0) {

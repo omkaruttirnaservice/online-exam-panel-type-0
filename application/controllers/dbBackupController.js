@@ -343,6 +343,11 @@ const createMyCnfFile = () => {
         fs.unlinkSync(myCnfPath);
     }
 
+    if (!fs.existsSync(DIR.DB_BACKUP)) {
+        console.log('Info: Creating backup directory...');
+        fs.mkdirSync(DIR.DB_BACKUP, { recursive: true });
+    }
+
     const fileConfig = `
         [client]
         user='${process.env.DB_USER}'

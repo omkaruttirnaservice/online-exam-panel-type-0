@@ -335,7 +335,6 @@ const dbBackupController = {
 };
 
 const createMyCnfFile = () => {
-    console.log('➡️ Creating .my.cnf file');
     const fs = require('fs');
     const myCnfPath = DIR.MY_SQL_CNF_PATH;
 
@@ -344,10 +343,11 @@ const createMyCnfFile = () => {
     }
 
     if (!fs.existsSync(DIR.DB_BACKUP)) {
-        console.log('Info: Creating backup directory...');
+        console.log('➡️ Info: Creating backup directory...');
         fs.mkdirSync(DIR.DB_BACKUP, { recursive: true });
     }
 
+    console.log('➡️ Creating .my.cnf file');
     const fileConfig = `
         [client]
         user='${process.env.DB_USER}'

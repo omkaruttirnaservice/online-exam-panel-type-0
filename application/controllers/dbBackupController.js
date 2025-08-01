@@ -343,8 +343,9 @@ const createMyCnfFile = () => {
     }
 
     if (!fs.existsSync(DIR.DB_BACKUP)) {
-        console.log('➡️ Info: Creating backup directory...');
+        console.log('➡️ Info: Creating backup directory started...');
         fs.mkdirSync(DIR.DB_BACKUP, { recursive: true });
+        console.log('➡️ Info: Creating backup directory completed...');
     }
 
     console.log('➡️ Creating .my.cnf file');

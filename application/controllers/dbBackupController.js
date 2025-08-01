@@ -29,7 +29,7 @@ let backupIntervalTime = BACKUP_INTERVAL_MIN * ONE_MIN_TO_MILISECONDS;
 // let centerCode = null;
 
 const getTimestamp = () => {
-    return momentTz().tz('Asia/Kolkata').format('YYYY_MM_DD_HH_mm_ss');
+    return momentTz().tz('Asia/Kolkata').format('YYYY_MM_DD_HH_mm_ss_SSS');
 };
 const getBytesToMB = (bytes, precision = 2) => {
     if (typeof bytes !== 'number' && isNaN(bytes))

@@ -100,7 +100,11 @@ const dbBackupController = {
 
             return res.status(200).json({
                 call: IS_CONNECTED_TO_BACKUP_SERVER ? 1 : 0,
-                message: '',
+                message: IS_CONNECTED_TO_BACKUP_SERVER
+                    ? 'Connected successfully to backup server'
+                    : !BACKUP_SERVER_IP
+                    ? 'No backup server IP found'
+                    : 'No able to connect to backup server',
                 status: IS_CONNECTED_TO_BACKUP_SERVER,
                 backupConnectedIP: BACKUP_SERVER_IP,
             });

@@ -36,11 +36,9 @@ window.addEventListener('load', function () {
                 setMessage(data.message);
                 if (!data.backupConnectedIP || !data.status) {
                     setStatus(false);
-                    setMessage('No backup IP found or backup server not connected');
                     clearInterval(backupInterval);
                     retryCount++;
                 } else if (data.backupConnectedIP || data.status) {
-                    setMessage('Backup server connected');
                     setStatus(true);
                 }
                 const ip = data?.backupConnectedIP.replace('http://', '') || '';

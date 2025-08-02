@@ -279,7 +279,7 @@ const dbBackupController = {
 
                 resolve(response);
             } catch (error) {
-                console.log(error);
+                console.log(`Info: ${error?.message || 'Unable to save to backup server...'}`);
                 let _message = null;
                 if (error.code == 'ERR_INVALID_URL') {
                     _message = 'Invalid url';

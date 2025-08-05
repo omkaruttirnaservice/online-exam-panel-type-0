@@ -215,8 +215,6 @@ var adminController = {
         exam_list = {
             exam_list: JSON.parse(data.exam_list),
         };
-        console.log({ exam_list });
-        console.log(cURLConf.CURL_link.new_exam_list, '=');
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list,
@@ -226,8 +224,6 @@ var adminController = {
                 },
             },
             function (error, response, body) {
-                console.log({ response: response.statusCode });
-                console.log(body,'=body');
                 if (typeof response === 'undefined') {
                     res.status(200).send({ call: 999 });
                 } else {

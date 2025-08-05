@@ -285,7 +285,7 @@ var adminController = {
                 } else {
                     if (!error && response.statusCode == 200) {
                         var json_data = JSON.parse(body);
-                        // console.log(json_data);
+                        console.log({ json_data });
                         switch (json_data.call) {
                             case 1:
                                 AdminModel.cleanStudent(res.pool, data)
@@ -316,7 +316,7 @@ var adminController = {
     },
     getCURLDownloadExam: function (req, res, next) {
         var data = req.body;
-        //console.log(cURLConf.CURL_link.download_exam + '/' + data.id);
+        // console.log(cURLConf.CURL_link.download_exam + '/' + data.id, '===');
         request(cURLConf.CURL_link.download_exam + '/' + data.id, function (error, response, body) {
             if (typeof response === 'undefined') {
                 res.status(200).send({ call: 999 });
@@ -339,6 +339,25 @@ var adminController = {
                                     return AdminModel.addQuestionPaper(
                                         res.pool,
                                         json_data.exam_question
+                                    );
+                                })
+                                .then(() => {
+                                    /**
+                                     * This will clean previous post and published test id mapping to database
+                                     * For the published test id
+                                     * */
+                                    return AdminModel.cleanPublishTestByPost(
+                                        res.pool,
+                                        json_data.exam_info[0].ptl_test_id
+                                    );
+                                })
+                                .then(() => {
+                                    /**
+                                     * This will add post and published test id mapping to database
+                                     */
+                                    return AdminModel.addPublishTestByPost(
+                                        res.pool,
+                                        json_data._postsList
                                     );
                                 })
                                 .then((data) => {

@@ -41,7 +41,7 @@ window.addEventListener('load', function () {
                 } else if (data.backupConnectedIP || data.status) {
                     setStatus(true);
                 }
-                const ip = data?.backupConnectedIP.replace('http://', '') || '';
+                const ip = data?.backupConnectedIP?.replace('http://', '') || '';
                 $('#backup-ip-display').text(ip);
                 $('#backup-ip-input').val(ip);
                 isBackupServerConnected = data?.status || false;

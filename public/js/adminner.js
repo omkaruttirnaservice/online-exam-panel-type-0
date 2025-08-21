@@ -48,6 +48,7 @@ function uploadExamToMasert(_this,pub_id){
                             {pub_id:pub_id},
                             function(data, status){
                                 console.log(data);
+                                console.log(status);
                                 removeLoading();
                                 
                                     if(status == 'success'){
@@ -67,9 +68,9 @@ function uploadExamToMasert(_this,pub_id){
                                             case 4:
                                                 alert('Fail, Exam Paper Not Found');
                                                 break;
-                                            case 4:
-                                                alert('Inner Query Error, Please See Console');
-                                                break;
+                                            // case 4:
+                                            //     alert('Inner Query Error, Please See Console');
+                                            //     break;
                                             case 999:
                                                 alert('Master Admin Server Not Found');
                                                 break;

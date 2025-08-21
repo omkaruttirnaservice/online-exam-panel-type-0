@@ -1194,6 +1194,9 @@ module.exports = {
                 {
                     url: cURLConf.CURL_link.upload_exam_link,
                     body: JSON.stringify(send_data),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 },
                 function (error, response, body) {
                     if (typeof response === 'undefined') {

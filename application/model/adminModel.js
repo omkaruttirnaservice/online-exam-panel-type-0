@@ -1174,8 +1174,8 @@ module.exports = {
     },
     updateMasterIP: function (pool, data) {
         return new Promise((resolve, reject) => {
-            data =
-                "var ip_adress = { host: '" + data.ipAdress + "'}; exports.ip_adress = ip_adress;";
+            data =  `var ip_address = { host: '${data.ipAdress}'};
+                     module.exports = ip_address`;
             fs.writeFile('ip_data.js', data, function (err) {
                 if (err) {
                     (responderSet.sendData._call = -1),

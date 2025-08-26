@@ -1189,6 +1189,7 @@ module.exports = {
         });
     },
     uploadResultPerBatch: function (cURLConf, request, send_data) {
+        console.log(cURLConf.CURL_link.upload_exam_link,'=cURLConf.CURL_link.upload_exam_link')
         return new Promise((resolve, reject) => {
             request.post(
                 {

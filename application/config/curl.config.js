@@ -1,5 +1,5 @@
-var ip_address = require('../../ip_data');
-var host = ip_address.host;
+var _ip_adress = require('../../ip_data.js')
+var host = _ip_adress.host
 var CURL_link = {
     new_exam_list: host + 'getNewExamList',
     download_exam: host + 'DownloadExam',

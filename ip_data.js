@@ -1,2 +1,2 @@
-var ip_address = { host: 'http://192.168.1.25:5001/gov/'};
-module.exports = ip_address
+var ip_address = { host: 'http://127.0.0.1:5001'};
+                     module.exports = ip_address

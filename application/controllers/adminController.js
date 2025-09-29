@@ -449,19 +449,7 @@ var adminController = {
     },
     createDbBackup: function (req, res, next) {
         var data = req.body;
-        AdminModel.createDbBackup(res.pool, data)
-            .then(function (res_data) {
-                try {
-                    if (fs.existsSync(res_data)) {
-                        return AdminModel.updateExamIsGen(res.pool, data);
-                    } else {
-                        return { call: -1 };
-                    }
-                } catch (error) {
-                    console.log(error);
-                    return { call: 0, data: error };
-                }
-            })
+        AdminModel.updateExamIsGen(res.pool, data)
             .then((is_done) => {
                 res.status(200).send({ call: 1 });
             })
@@ -469,6 +457,28 @@ var adminController = {
                 console.log(error);
                 res.status(200).send({ call: error });
             });
+
+        // var data = req.body;
+        // AdminModel.createDbBackup(res.pool, data)
+        //     .then(function (res_data) {
+        //         try {
+        //             if (fs.existsSync(res_data)) {
+        //                 return AdminModel.updateExamIsGen(res.pool, data);
+        //             } else {
+        //                 return { call: -1 };
+        //             }
+        //         } catch (error) {
+        //             console.log(error);
+        //             return { call: 0, data: error };
+        //         }
+        //     })
+        //     .then((is_done) => {
+        //         res.status(200).send({ call: 1 });
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         res.status(200).send({ call: error });
+        //     });
     },
     unsetExam: function (req, res, next) {
         var data = req.body;

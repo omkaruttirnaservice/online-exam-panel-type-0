@@ -43,7 +43,17 @@ app.use(function (req, res, next) {
     );
     next();
 });
-app.use(logger('dev'));
+app.use(
+    logger(':method :url :status :res[content-length] - :response-time ms', {
+        skip: (req, res) => {
+            return (
+                req.url.startsWith('/js') ||
+                req.url.match(/\.(js|css|jpg|jpeg|png|gif|ico)$/) ||
+                req.url.startsWith('/socket')
+            );
+        },
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

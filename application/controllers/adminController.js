@@ -215,6 +215,7 @@ var adminController = {
         exam_list = {
             exam_list: JSON.parse(data.exam_list),
         };
+        console.log("Getting exam list from : ", cURLConf.CURL_link.new_exam_list);
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list,

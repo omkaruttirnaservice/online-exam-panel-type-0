@@ -17,8 +17,8 @@ const DIR = {
 
 let IS_CONNECTED_TO_BACKUP_SERVER = false;
 let BACKUP_SERVER_IP = null;
-let serverNumber = 1;
-let centerCode = 101;
+let serverNumber = process.env.SERVER_NO || 1;
+let centerCode = null;
 let backupInterval = null;
 
 const ONE_MIN_TO_MILISECONDS = 60000;
@@ -42,6 +42,16 @@ const dbBackupController = {
         return res.status(200).json({
             call: 1,
             message: 'Connected',
+        });
+    },
+
+    getCenterCode: (pool) => {
+        return new Promise((resolve, reject) => {
+            const q = 'SELECT a_code FROM aouth LIMIT 1;';
+            pool.query(q, function (err, result) {
+                if (err) reject(err);
+                else resolve(result);
+            });
         });
     },
 
@@ -143,12 +153,116 @@ const dbBackupController = {
         }
     },
 
+    async connectBackupServerV2(req, res, next) {
+        // This will update the backup db IP
+        try {
+            BACKUP_SERVER_IP = req.body.backup_ip;
+            // first check connection with backup
+            await dbBackupController.checkPrimaryToBackupConnection();
+
+            // get center code
+            const _centerCode = await dbBackupController.getCenterCode(res.pool);
+            if (_centerCode.length === 0) {
+                return res.status(200).json({
+                    call: 0,
+                    message: 'Center code not available',
+                });
+            }
+
+            centerCode = _centerCode[0].a_code;
+
+            // take initial backup when connected
+            await dbBackupController.backupDbV2();
+
+            // start the interval for backup automatically
+            dbBackupController.runBackupIntervalV2();
+            return res.status(200).json({
+                call: 1,
+                message: 'Connected',
+            });
+        } catch (error) {
+            IS_CONNECTED_TO_BACKUP_SERVER = false;
+            return res.status(200).json({
+                call: 0,
+                message: error?.message || 'Error while connecting',
+            });
+        }
+    },
+
     backupDb() {
         return new Promise((resolve, reject) => {
             const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
             const BACKUP_DIR = DIR.DB_BACKUP;
             const DATABASE_NAME = process.env.DB_DATABASE;
             const backupFileName = `backup_cc_${centerCode}_${getTimestamp()}.sql`;
+            let backupFilePath = path.join(BACKUP_DIR, backupFileName);
+
+            const dumpWriteStream = fs.createWriteStream(backupFilePath);
+
+            try {
+                if (!fs.existsSync(BACKUP_DIR)) {
+                    console.log('Info: checking if backup dir exsists');
+                    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+                }
+                if (!fs.existsSync(mySqlConfigPath)) {
+                    console.log("Info: config file doesn't exsists");
+                    return;
+                }
+                const dumpCommand = spawn('mysqldump', [
+                    `--defaults-extra-file=${mySqlConfigPath}`,
+                    `${DATABASE_NAME}`,
+                ]);
+
+                dumpCommand.stdout.pipe(dumpWriteStream);
+
+                dumpCommand.stderr.on('data', (data) => {
+                    console.log(data);
+                });
+
+                dumpCommand.on('error', (err) => {
+                    console.log(err);
+                });
+
+                dumpCommand.on('close', (dumpCode) => {
+                    console.log(dumpCode, '=dumpCode');
+                    if (dumpCode !== 0) {
+                        return;
+                    }
+                });
+
+                dumpWriteStream.on('finish', async () => {
+                    const dumpStats = fs.statSync(backupFilePath);
+                    console.log(`✅ Dump completed: ${getBytesToMB(dumpStats.size)} MB`);
+                    // prettier-ignore
+                    console.log(`Database Backup completed with file size: ${getBytesToMB(dumpStats.size)} MB\n`)
+                    console.log(`File path: ${backupFilePath}`);
+                    try {
+                        await dbBackupController.uploadToBackupServer(backupFilePath);
+                        resolve({
+                            call: 1,
+                            message: `Generated db backup successful`,
+                        });
+                    } catch (error) {
+                        console.log(
+                            `❎ Error : ${error?.message || 'Error whie uploading db backup file'}`
+                        );
+                    }
+                });
+            } catch (error) {
+                reject({
+                    call: 0,
+                    message: error?.message || 'Error while db backup',
+                });
+            }
+        });
+    },
+
+    backupDbV2() {
+        return new Promise((resolve, reject) => {
+            const mySqlConfigPath = DIR.MY_SQL_CNF_PATH;
+            const BACKUP_DIR = DIR.DB_BACKUP;
+            const DATABASE_NAME = process.env.DB_DATABASE;
+            const backupFileName = `backup_cc_${centerCode}_s_${serverNumber}_${getTimestamp()}.sql`;
             let backupFilePath = path.join(BACKUP_DIR, backupFileName);
 
             const dumpWriteStream = fs.createWriteStream(backupFilePath);
@@ -336,6 +450,20 @@ const dbBackupController = {
                     `Backup interval time : ${backupIntervalTime} miliseconds [${BACKUP_INTERVAL_MIN} min]`
                 );
                 await dbBackupController.backupDb();
+            }, backupIntervalTime);
+        }
+    },
+
+    runBackupIntervalV2() {
+        if (backupInterval) {
+            clearInterval(backupInterval);
+        }
+        if (IS_CONNECTED_TO_BACKUP_SERVER) {
+            backupInterval = setInterval(async () => {
+                console.log(
+                    `Backup interval time : ${backupIntervalTime} miliseconds [${BACKUP_INTERVAL_MIN} min]`
+                );
+                await dbBackupController.backupDbV2();
             }, backupIntervalTime);
         }
     },

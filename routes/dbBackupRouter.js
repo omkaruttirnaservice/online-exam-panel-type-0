@@ -6,6 +6,7 @@ const router = require('express').Router();
 
 // 1.
 router.post('/connect-backup-server', dbBackupController.connectBackupServer);
+router.post('/v2/connect-backup-server',checkForPoolConnection,  dbBackupController.connectBackupServerV2);
 router.get('/check-connection', dbBackupController.checkConnectionStatus);
 
 router.post('/restore', checkForPoolConnection, dbBackupController.restoreDb);

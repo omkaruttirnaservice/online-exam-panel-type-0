@@ -69,7 +69,7 @@ window.addEventListener('load', function () {
         thisBtn.text('Connecting...');
 
         $.ajax({
-            url: '/connect-backup-server',
+            url: '/v2/connect-backup-server',
             type: 'POST',
             data: {
                 backup_ip: 'http://' + backupIP,

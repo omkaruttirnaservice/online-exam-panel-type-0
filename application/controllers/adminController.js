@@ -20,9 +20,12 @@ var adminController = {
     },
     adminHome: (req, res, next) => {
         if (typeof req.session.Admin == 'undefined') {
+            let message = req.session._loginMessage;
+            delete req.session._loginMessage;
             res.render('admin/index', {
                 cc: 0,
                 c_name: '',
+                message,
             });
         } else {
             res.redirect('/admin/exams');
@@ -46,6 +49,11 @@ var adminController = {
     },
 
     adminLoginAuth: (req, res, next) => {
+        // console.log(process.env.SERVER_NO, '-server no');
+        if (process?.env?.SERVER_NO == undefined || !process?.env?.SERVER_NO) {
+            req.session._loginMessage = 'Server number not set in env';
+            return res.redirect('/admin');
+        }
         var data = req.body;
         AdminModel.checkAdminLoginAuth(res.pool, data)
             .then((result) => {
@@ -215,7 +223,7 @@ var adminController = {
         exam_list = {
             exam_list: JSON.parse(data.exam_list),
         };
-        console.log("Getting exam list from : ", cURLConf.CURL_link.new_exam_list);
+        console.log('Getting exam list from : ', cURLConf.CURL_link.new_exam_list);
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list,

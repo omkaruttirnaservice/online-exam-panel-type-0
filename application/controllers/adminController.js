@@ -26,6 +26,7 @@ var adminController = {
                 cc: 0,
                 c_name: '',
                 message,
+                serverNo: process.env.SERVER_NO,
             });
         } else {
             res.redirect('/admin/exams');
@@ -36,6 +37,7 @@ var adminController = {
             res.render('sw/index', {
                 cc: 0,
                 c_name: '',
+                serverNo: process.env.SERVER_NO,
             });
         } else {
             res.redirect('/sw/exam_lock_status');
@@ -45,6 +47,7 @@ var adminController = {
         res.render('admin/exams', {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
+            serverNo: process.env.SERVER_NO,
         });
     },
 
@@ -77,6 +80,7 @@ var adminController = {
         res.render('admin/adminner', {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
+            serverNo: process.env.SERVER_NO,
         });
     },
     adminLogOut: (req, res, next) => {
@@ -116,12 +120,14 @@ var adminController = {
         res.render('admin/student-attendance', {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
+            serverNo: process.env.SERVER_NO,
         });
     },
     getAllStudentsView: function (req, res, next) {
         res.render('admin/all-students', {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
+            serverNo: process.env.SERVER_NO,
         });
     },
     getBatchStudentList: function (req, res, next) {
@@ -180,6 +186,7 @@ var adminController = {
                     student_list: details.student,
                     cc: req.session.Admin.cc,
                     c_name: req.session.Admin.c_name,
+                    serverNo: process.env.SERVER_NO,
                 });
             })
             .catch((error) => {
@@ -560,6 +567,7 @@ var adminController = {
                     cc: req.session.Admin.cc,
                     student_list: result,
                     c_name: req.session.Admin.c_name,
+                    serverNo: process.env.SERVER_NO,
                 });
             })
             .catch((error) => {
@@ -572,6 +580,7 @@ var adminController = {
             .then((result) => {
                 res.render('admin/sw-exam-lock-list', {
                     student_list: result,
+                    serverNo: process.env.SERVER_NO,
                 });
             })
             .catch((error) => {
@@ -624,6 +633,7 @@ var adminController = {
                     cc: req.session.Admin.cc,
                     student_list: result,
                     c_name: req.session.Admin.c_name,
+                    serverNo: process.env.SERVER_NO,
                 });
             })
             .catch((error) => {
@@ -636,6 +646,7 @@ var adminController = {
         res.render('admin/upload-banner-view.pug', {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
+            serverNo: process.env.SERVER_NO,
         });
     },
 

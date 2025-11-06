@@ -252,6 +252,37 @@ var adminController = {
             }
         );
     },
+
+    getCURLExamListV2: function (req, res, next) {
+        const data = req.body;
+        console.log(data);
+        let exam_list = {
+            exam_list: JSON.parse(data.exam_list),
+            examDate: data.examDate,
+        };
+        console.log('Getting exam list from : ', cURLConf.CURL_link.new_exam_list_v2);
+        request.post(
+            {
+                url: cURLConf.CURL_link.new_exam_list_v2,
+                body: JSON.stringify({ exam_list }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+            function (error, response, body) {
+                if (typeof response === 'undefined') {
+                    res.status(200).send({ call: 999 });
+                } else {
+                    if (!error && response.statusCode == 200) {
+                        res.status(200).send(body);
+                    } else {
+                        res.status(response.statusCode).send(body);
+                    }
+                }
+            }
+        );
+    },
+
     getCURLCenterDetails: function (req, res, next) {
         var data = req.body;
         request(

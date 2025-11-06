@@ -131,6 +131,13 @@ router.post(
   commenMiddleware.checkForPoolConnection,
   adminController.getCURLExamList
 );
+
+router.post(
+  "/v2/get-exam-list",
+  commenMiddleware.checkForPoolConnection,
+  adminController.getCURLExamListV2
+);
+
 router.post(
   "/requestCenterCode",
   commenMiddleware.checkForPoolConnection,

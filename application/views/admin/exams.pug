@@ -6,7 +6,10 @@ block content
                     
         .row
             .col-xs-12.col-sm-12.col-md-12.col-lg-12
+
                 button#get-exam-list.btn.btn-primary.btn-sm(type='button') Get New Exam List
+                input(type="date" value=`${new Date().toISOString().split('T')[0]}` id="exam_date" style="margin-left:10px;")
+
                 button#agree.btn.btn-success.btn-sm.hide(type='button') I Agree
                 button#start_exam.btn.btn-success.btn-sm.hide(type='button') Start Exam
 

@@ -2,6 +2,7 @@ var _ip_adress = require('../../ip_data.js')
 var host = _ip_adress.host
 var CURL_link = {
     new_exam_list: host + '/gov/getNewExamList',
+    new_exam_list_v2: host + '/gov/v2/getNewExamList',
     download_exam: host + '/gov/DownloadExam',
     download_student_batch: host + '/gov/DownloadStudentBatch',
     upload_exam_link: host + '/gov/saveUploadedExam',

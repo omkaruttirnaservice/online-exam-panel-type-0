@@ -3,13 +3,15 @@ var new_exam_list = [];
 $(function () {
     getAllExamList();
     $('#get-exam-list').on('click', function () {
+        const examDate = $('#exam_date').val();
+
         test_id_list = [];
         test_id_list = exam_list.map(function (data) {
             return data.id;
         });
         $.post(
-            getUrl() + 'get-exam-list',
-            { exam_list: JSON.stringify(test_id_list) },
+            getUrl() + '/v2/get-exam-list',
+            { exam_list: JSON.stringify(test_id_list), examDate },
             function (data, status) {
                 if (status == 'success') {
                     if (typeof data === 'object') {

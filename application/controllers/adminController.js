@@ -544,6 +544,7 @@ var adminController = {
                 res.status(200).send(error);
             });
     },
+
     clearDB: function (req, res, next) {
         var table = responderSet.table_list;
         console.log(table[0]);
@@ -577,6 +578,22 @@ var adminController = {
                 res.status(200).send(error);
             });
     },
+
+    clearDBV2: async function (req, res, next) {
+        try {
+            const tables = responderSet.table_list;
+
+            for (let table of tables) {
+                await AdminModel.clearTableRecored(res.pool, table);
+            }
+
+            res.status(200).send({ call: 1 });
+        } catch (error) {
+            console.error('Error clearing tables:', error);
+            res.status(200).send(error);
+        }
+    },
+
     loadStudentListBackToFinal: function (req, res, next) {
         var data = req.body;
         AdminModel.RemoveOldExamData(res.pool, data)

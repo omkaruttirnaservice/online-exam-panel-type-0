@@ -9,7 +9,7 @@ $(function(){
                                 return false;
                             }
                                 addLoading();
-                                $.post(getUrl()+'clear-all-redcores',
+                                $.post(getUrl()+'v2/clear-all-redcores',
                                 function(data, status){
                                     removeLoading();
                                     if(status == 'success'){

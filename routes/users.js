@@ -148,6 +148,14 @@ router.post(
   commenMiddleware.checkForPoolConnection,
   adminController.clearDB
 );
+
+router.post(
+  "/v2/clear-all-redcores",
+  commenMiddleware.checkForPoolConnection,
+  adminController.clearDBV2
+);
+
+
 router.post(
   "/unset-exam",
   commenMiddleware.checkForPoolConnection,

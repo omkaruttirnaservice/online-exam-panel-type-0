@@ -39,7 +39,13 @@ router.get(
 router.get('/confirmtion', commenMiddleware.checkForPoolConnection, indexController.Confirmtion);
 router.get('/warm-up', commenMiddleware.checkForPoolConnection, indexController.viewWarmUp);
 router.get('/test', commenMiddleware.checkForPoolConnection, indexController.startExamination);
-router.post('/go', indexController.updateTestDetails);
+
+// Version 1 of updating test details
+// router.post('/go', indexController.updateTestDetails);
+
+// Version 2 of updating test details
+router.post('/go', indexController.updateTestDetailsV2);
+
 router.get(
     '/climax/:publish_id/:student_id',
     commenMiddleware.checkForPoolConnection,

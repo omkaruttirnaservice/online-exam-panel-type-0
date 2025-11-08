@@ -10,7 +10,7 @@ $(function () {
             return data.id;
         });
         $.post(
-            getUrl() + '/v2/get-exam-list',
+            getUrl() + 'v2/get-exam-list',
             { exam_list: JSON.stringify(test_id_list), examDate },
             function (data, status) {
                 if (status == 'success') {

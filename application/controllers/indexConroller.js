@@ -377,6 +377,7 @@ var indexController = {
                     });
                 });
     },
+
     updateTestDetails: function(req, res, next){
         var details = req.body;
         var updateDetails =  {
@@ -422,6 +423,54 @@ var indexController = {
                 
             });
     },
+
+    updateTestDetailsV2: function(req, res, next){
+        var details = req.body;
+        var updateDetails =  {
+                    test_id : Number(details['test_id']),
+                    min : Number(details['min']),
+                    sec : Number(details['sec']),
+                    test_status: Number(details['test_status']),
+                    test_id : Number(details['test_id']),
+                    publish_id : Number(details['publish_id']),
+                    student_id: Number(details['student_id'])
+                };
+        details.list = JSON.parse(details.list);
+        req.getConnection(function (err, connection) {
+            if (err) {
+                res.status(400).send({call:2});
+            } else {
+                        IndexModel.updateStudentTestTimerAndStatus(connection, updateDetails)
+                            .then(function (isStudentStatus) {
+                                return resultStatus.checkResultUpdated(isStudentStatus, 'Unable to update details.');
+                            })
+                            .then(function (isQuestionPaperUpdated) {
+                                if (details.list.length > 0){
+                                    return IndexModel.updateTestQuestionDetailsV2(connection, details.list[0]);
+                                }else{
+                                   return  isQuestionPaperUpdated;
+                                }
+                            })
+                            .then(function (updatedData) {
+                                if (details.list.length > 0) {
+                                    return resultStatus.checkResultUpdated(updatedData, 'Unable to update details.');
+                                }else{
+                                    return updatedData;
+                                }
+                            })
+                            .then(function (final_result) {
+                                res.status(200).send({ call: 1 });
+                            })
+                            .catch(function (err) {
+                                console.log(err, 'err');
+                                if (err._call == 0) { res.status(200).send({ call: 2 }) };
+                                if (err._call == 3) { res.status(404).send({ call: 2 }) };
+                            });
+                }
+                
+            });
+    },
+
     viewErrorPage :function(req, res, next){
         // res.render('error_page',{
         //     message: "This Is Error Message",

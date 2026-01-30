@@ -237,6 +237,7 @@ var adminController = {
                 body: JSON.stringify({ exam_list }),
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
                 },
             },
             function (error, response, body) {
@@ -249,17 +250,19 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            }
+            },
         );
     },
 
     getCURLExamListV2: function (req, res, next) {
         const data = req.body;
-        console.log(data);
+        console.log(data, 'data');
         let exam_list = {
             exam_list: JSON.parse(data.exam_list),
             examDate: data.examDate,
+            examMode: data.examMode,
         };
+        console.log({ exam_list });
         console.log('Getting exam list from : ', cURLConf.CURL_link.new_exam_list_v2);
         request.post(
             {
@@ -267,19 +270,21 @@ var adminController = {
                 body: JSON.stringify({ exam_list }),
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
                 },
             },
             function (error, response, body) {
+                console.log(error, response, body);
                 if (typeof response === 'undefined') {
                     res.status(200).send({ call: 999 });
                 } else {
                     if (!error && response.statusCode == 200) {
                         res.status(200).send(body);
                     } else {
-                        res.status(response.statusCode).send(body);
+                        res.status(response.statusCode).json(body);
                     }
                 }
-            }
+            },
         );
     },
 
@@ -315,7 +320,7 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            }
+            },
         );
     },
     getCURLDownloadStudent: function (req, res, next) {
@@ -339,7 +344,7 @@ var adminController = {
                                     .then((result) => {
                                         return AdminModel.addBatchToList(
                                             res.pool,
-                                            json_data.exam_student_list
+                                            json_data.exam_student_list,
                                         );
                                     })
                                     .then((result) => {
@@ -358,78 +363,112 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            }
+            },
         );
     },
     getCURLDownloadExam: function (req, res, next) {
+        /**
+         * This downloads the exam from Question Paper Generation API
+         */
         var data = req.body;
-        // console.log(cURLConf.CURL_link.download_exam + '/' + data.id, '===');
-        request(cURLConf.CURL_link.download_exam + '/' + data.id, function (error, response, body) {
-            if (typeof response === 'undefined') {
-                res.status(200).send({ call: 999 });
-            } else {
-                if (!error && response.statusCode == 200) {
-                    var json_data = JSON.parse(body);
-                    switch (json_data.call) {
-                        case 1:
-                            AdminModel.cleanPublish(res.pool, json_data.exam_info[0].id)
-                                .then((data) => {
-                                    return AdminModel.addPublishList(res.pool, json_data.exam_info);
-                                })
-                                .then((data) => {
-                                    return AdminModel.cleanQuestionPaper(
-                                        res.pool,
-                                        json_data.exam_info[0].ptl_test_id
-                                    );
-                                })
-                                .then((data) => {
-                                    return AdminModel.addQuestionPaper(
-                                        res.pool,
-                                        json_data.exam_question
-                                    );
-                                })
-                                .then(() => {
-                                    /**
-                                     * This will clean previous post and published test id mapping to database
-                                     * For the published test id
-                                     * */
-                                    return AdminModel.cleanPublishTestByPost(
-                                        res.pool,
-                                        json_data.exam_info[0].ptl_test_id
-                                    );
-                                })
-                                .then(() => {
-                                    /**
-                                     * This will add post and published test id mapping to database
-                                     */
-                                    return AdminModel.addPublishTestByPost(
-                                        res.pool,
-                                        json_data._postsList
-                                    );
-                                })
-                                .then((data) => {
-                                    res.status(200).send({ call: 1 });
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                    res.status(200).send({ call: -1, error: error });
-                                });
-                            break;
-                        case 2:
-                            res.status(200).send({ call: 2 });
-                            break;
-                        case 3:
-                            res.status(200).send({ call: 3 });
-                            break;
-                        default:
-                            res.status(200).send({ call: 0 });
-                            break;
-                    }
+        request(
+            {
+                url: cURLConf.CURL_link.download_exam + '/' + data.id,
+                headers: {
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
+                },
+            },
+            function (error, response, body) {
+                if (typeof response === 'undefined') {
+                    res.status(200).send({ call: 999 });
                 } else {
-                    res.status(response.statusCode).send(body);
+                    if (!error && response.statusCode == 200) {
+                        var json_data = JSON.parse(body);
+
+                        switch (json_data.call) {
+                            case 1:
+                                AdminModel.cleanPublish(res.pool, json_data.exam_info[0].id)
+                                    .then((data) => {
+                                        return AdminModel.addPublishList(
+                                            res.pool,
+                                            json_data.exam_info,
+                                        );
+                                    })
+                                    .then((data) => {
+                                        return AdminModel.cleanQuestionPaper(
+                                            res.pool,
+                                            json_data.exam_info[0].ptl_test_id,
+                                        );
+                                    })
+                                    .then((data) => {
+                                        return AdminModel.addQuestionPaper(
+                                            res.pool,
+                                            json_data.exam_question,
+                                        );
+                                    })
+                                    .then(() => {
+                                        /**
+                                         * This will clean previous post and published test id mapping to database
+                                         * For the published test id
+                                         * */
+                                        return AdminModel.cleanPublishTestByPost(
+                                            res.pool,
+                                            json_data.exam_info[0].ptl_test_id,
+                                        );
+                                    })
+                                    .then(() => {
+                                        /**
+                                         * This will add post and published test id mapping to database
+                                         */
+                                        return AdminModel.addPublishTestByPost(
+                                            res.pool,
+                                            json_data._postsList,
+                                        );
+                                    })
+                                    .then(async (data) => {
+                                        if (json_data?._mockStudentsList?.length === 0) {
+                                            return true;
+                                        }
+
+                                        const { center_code, tm_allow_to } = json_data.exam_info[0];
+
+                                        // cleaning up previous students
+                                        await AdminModel.cleanStudent(res.pool, {
+                                            center_code,
+                                            batch_list: tm_allow_to,
+                                        });
+
+                                        // add new mock studens list to database
+                                        await AdminModel.addBatchToList(
+                                            res.pool,
+                                            json_data?._mockStudentsList || [],
+                                        );
+                                        return true;
+                                    })
+                                    .then((data) => {
+                                        res.status(200).send({ call: 1 });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        res.status(200).send({ call: -1, error: error });
+                                    });
+                                break;
+                            case 2:
+                                res.status(200).send({ call: 2 });
+                                break;
+                            case 3:
+                                res.status(200).send({ call: 3 });
+                                break;
+                            default:
+                                res.status(200).send({ call: 0 });
+                                break;
+                        }
+                    } else {
+                        res.status(response.statusCode).send(body);
+                    }
                 }
-            }
-        });
+            },
+        );
     },
     getCURLSendData: function (req, res, next) {
         var data = req.body;

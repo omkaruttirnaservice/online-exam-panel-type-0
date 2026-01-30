@@ -10,6 +10,10 @@ block content
                 button#get-exam-list.btn.btn-primary.btn-sm(type='button') Get New Exam List
                 input(type="date" value=`${new Date().toISOString().split('T')[0]}` id="exam_date" style="margin-left:10px;")
 
+                select#exam_mode(name='exam_mode')
+                    option(value='EXAM') EXAM
+                    option(value="MOCK") MOCK
+
                 button#agree.btn.btn-success.btn-sm.hide(type='button') I Agree
                 button#start_exam.btn.btn-success.btn-sm.hide(type='button') Start Exam
 
@@ -42,10 +46,40 @@ block content
                             th Exam Name
                             th Duration
                             th Batch No
-                            th Download Exam
+                            th(width='3%') Download Exam
                     tbody#new_exams_list_tbody
                         tr
                             td(colspan="7", style="text-align:center") No Exams Found
+        
+        //- Exam Details Modal
+        #examDetailsModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='examDetailsModalLabel')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') &times;
+                        h4#examDetailsModalLabel.modal-title Exam Details
+                    .modal-body
+                        table.table.table-bordered
+                            tbody
+                                tr
+                                    td
+                                        strong Batch No
+                                    td#modal-batch-no -
+                                tr
+                                    td
+                                        strong Exam Date
+                                    td#modal-exam-date -
+                                tr
+                                    td
+                                        strong Exam Time
+                                    td#modal-exam-time -
+                                tr
+                                    td
+                                        strong Total Students
+                                    td#modal-total-students -
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
 block inline_css
     style.
         .nav-li{

@@ -1,0 +1,57 @@
+//- Clock Component
+.clock-container
+    span#date-display --/--/----
+    span.clock-separator  | 
+    span#clock-display --:--:--
+    
+script.
+    (function() {
+        function updateClock() {
+            var now = new Date();
+            
+            // Date formatting (DD-MM-YYYY)
+            var day = String(now.getDate()).padStart(2, '0');
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var year = now.getFullYear();
+            var dateString = day + '-' + month + '-' + year;
+            
+            // Time formatting (HH:MM:SS AM/PM)
+            var hours = now.getHours();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // 0 should be 12
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var seconds = String(now.getSeconds()).padStart(2, '0');
+            var timeString = String(hours).padStart(2, '0') + ':' + minutes + ':' + seconds + ' ' + ampm;
+            
+            document.getElementById('date-display').textContent = dateString;
+            document.getElementById('clock-display').textContent = timeString;
+        }
+        
+        // Update immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    })();
+
+style.
+    .clock-container {
+        display: inline-block;
+        padding: 5px 12px;
+        margin-top: 8px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+    
+    #date-display,
+    #clock-display {
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        letter-spacing: 1px;
+    }
+    
+    .clock-separator {
+        color: #999;
+    }

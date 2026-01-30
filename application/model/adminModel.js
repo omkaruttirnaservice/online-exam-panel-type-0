@@ -12,10 +12,10 @@ module.exports = {
 
             pool.query(query, [aouth_data.user_name, aouth_data.password], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -24,13 +24,46 @@ module.exports = {
     },
     getPublishTestList: function (pool) {
         return new Promise((resolve, reject) => {
-            var query = 'SELECT * FROM tm_publish_test_list';
+            // var query = 'SELECT * FROM tm_publish_test_list';
+
+            var query = `
+      SELECT 
+				JSON_ARRAYAGG(
+					JSON_OBJECT(
+						'post_id', post_id,
+						'post_name', post_name,
+						'published_test_id', published_test_id
+					)
+				) AS post_details,
+				ptl.*,
+				DATE_FORMAT('ptl_active_date', '%d-%m-%Y'), ptl_active_date,
+                (
+                    SELECT
+                    JSON_OBJECT(
+                        "total_students", COUNT(id),
+                        "sl_batch_no",sl_batch_no,
+                        "sl_exam_date",DATE_FORMAT(sl_exam_date, '%d-%m-%Y'),
+                        "sl_exam_time",sl_exam_time
+                    )
+                    FROM tn_student_list AS sl
+                    WHERE sl.sl_batch_no = ptl.tm_allow_to
+                    LIMIT 1
+                    ) AS exam_details
+				
+			FROM tm_publish_test_list AS ptl
+
+			INNER JOIN
+				tm_publish_test_by_post
+			ON ptl.id = tm_publish_test_by_post.published_test_id
+			GROUP BY ptl.id
+      `;
+
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -42,10 +75,10 @@ module.exports = {
             var query = 'SELECT * FROM tm_publish_test_list WHERE ptl_is_test_done = 1';
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -63,10 +96,10 @@ module.exports = {
                 'FROM tm_publish_test_list WHERE id = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -78,10 +111,10 @@ module.exports = {
             var query = 'DELETE FROM tm_publish_test_list WHERE id = ?';
             pool.query(query, [id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -148,10 +181,10 @@ module.exports = {
                 });
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -184,10 +217,10 @@ module.exports = {
                 });
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -202,10 +235,10 @@ module.exports = {
             var query = 'DELETE FROM aouth';
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -217,10 +250,10 @@ module.exports = {
             var query = 'DELETE FROM tn_student_list WHERE sl_center_code = ? AND sl_batch_no = ? ';
             pool.query(query, [list_info.center_code, list_info.batch_list], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -283,10 +316,10 @@ module.exports = {
                 });
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -301,10 +334,10 @@ module.exports = {
             var query = 'UPDATE tm_publish_test_list SET is_start_exam = 1 WHERE id  = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -316,10 +349,10 @@ module.exports = {
             var query = 'UPDATE tm_publish_test_list SET is_test_loaded = 1 WHERE id  = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -336,10 +369,10 @@ module.exports = {
             var qData = [exam_details.batch_no];
             pool.query(query, qData, function (err, update_result) {
                 if (err) {
-                    (responderSet.sendData._call = 0),
+                    ((responderSet.sendData._call = 0),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(update_result);
                 }
@@ -356,10 +389,10 @@ module.exports = {
             var qData = [exam_details.pub_id];
             pool.query(query, qData, function (err, update_result) {
                 if (err) {
-                    (responderSet.sendData._call = 0),
+                    ((responderSet.sendData._call = 0),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(update_result);
                 }
@@ -372,10 +405,10 @@ module.exports = {
                 'UPDATE tn_main_student_list SET sl_is_present = 1 WHERE sl_roll_number  = ?';
             pool.query(query, [stud_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -394,10 +427,10 @@ module.exports = {
                 'sl_password as pas_key  FROM tn_main_student_list WHERE sl_roll_number = ? LIMIT 1';
             pool.query(query, [stud_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -416,10 +449,10 @@ module.exports = {
                 "sl_password as pas_key,IF(sl_is_present = 1,'Present','Absent') as attendance FROM tn_main_student_list WHERE sl_publish_id = ?";
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -442,10 +475,10 @@ module.exports = {
                 'FROM tn_student_list WHERE sl_center_code = ? AND sl_batch_no = ?';
             pool.query(query, [list_info.center_code, list_info.batch_list], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -461,14 +494,14 @@ module.exports = {
                     '(id,sl_f_name,sl_m_name,sl_l_name,sl_image,sl_sign,sl_email,' +
                     'sl_father_name,sl_mother_name,sl_address, sl_mobile_number_parents,' +
                     'sl_tenth_marks,sl_contact_number,sl_class,sl_roll_number,sl_subject,' +
-                    'sl_stream,sl_addmit_type,sl_time,sl_date,sl_time_stamp,sl_added_by_login_id,' +
+                    'sl_stream,sl_addmit_type,sl_time,sl_date, sl_exam_time,sl_time_stamp,sl_added_by_login_id,' +
                     'sl_is_live,sl_date_of_birth,sl_school_name,sl_catagory,sl_application_number,' +
                     'sl_is_physical_handicap,sl_is_physical_handicap_desc,sl_post,sl_center_code,' +
                     'sl_batch_no,sl_exam_date,sl_password) VALUES ?';
 
                 batch_to_publish.forEach(function (value, index, main_array) {
                     $data = [
-                        value.id,
+                        value.sl_roll_number, // roll number and id is same for tn_student_list table
                         value.sl_f_name,
                         value.sl_m_name,
                         value.sl_l_name,
@@ -488,6 +521,7 @@ module.exports = {
                         value.sl_addmit_type,
                         value.sl_time,
                         value.sl_date,
+                        value.sl_exam_time,
                         value.sl_time_stamp,
                         value.sl_added_by_login_id,
                         value.sl_is_live,
@@ -508,10 +542,10 @@ module.exports = {
                 });
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -576,10 +610,10 @@ module.exports = {
 
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -594,10 +628,10 @@ module.exports = {
             var query = 'DELETE FROM tm_test_question_sets WHERE tqs_test_id  = ?';
             pool.query(query, [id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -660,10 +694,10 @@ module.exports = {
                 });
                 pool.query(query, [insert_array], function (err, result) {
                     if (err) {
-                        (responderSet.sendData._call = -1),
+                        ((responderSet.sendData._call = -1),
                             (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                             (responderSet.sendData._sys_erorr = err),
-                            reject(responderSet.sendData);
+                            reject(responderSet.sendData));
                     } else {
                         resolve(result);
                     }
@@ -679,10 +713,10 @@ module.exports = {
 
             pool.query(query, [ptl_test_id], function (err, result) {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -704,10 +738,10 @@ module.exports = {
 
             pool.query(query, [insert_array], function (err, result) {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -754,10 +788,10 @@ module.exports = {
             var query = 'UPDATE tm_publish_test_list SET  ptl_is_test_done  = 1 WHERE id  = ?';
             pool.query(query, [data.pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -769,10 +803,10 @@ module.exports = {
             var query = 'UPDATE tm_publish_test_list SET  is_test_generated = 1 WHERE id  = ?';
             pool.query(query, [data.pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -789,31 +823,31 @@ module.exports = {
                 pool.query(query, [info_data.pub_id], function (error, results, fields) {
                     if (error) {
                         pool.rollback(function () {
-                            (responderSet.sendData._call = -1),
+                            ((responderSet.sendData._call = -1),
                                 (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                                 (responderSet.sendData._sys_erorr = error),
-                                reject(responderSet.sendData);
+                                reject(responderSet.sendData));
                         });
                     } else {
                         var query = 'DELETE FROM tm_student_test_list WHERE stl_publish_id   = ?';
                         pool.query(query, [info_data.pub_id], function (error, results, fields) {
                             if (error) {
                                 pool.rollback(function () {
-                                    (responderSet.sendData._call = -1),
+                                    ((responderSet.sendData._call = -1),
                                         (responderSet.sendData._error =
                                             'Op Error, Contact To Admin'),
                                         (responderSet.sendData._sys_erorr = error),
-                                        reject(responderSet.sendData);
+                                        reject(responderSet.sendData));
                                 });
                             } else {
                                 pool.commit(function (err) {
                                     if (err) {
                                         pool.rollback(function () {
-                                            (responderSet.sendData._call = -1),
+                                            ((responderSet.sendData._call = -1),
                                                 (responderSet.sendData._error =
                                                     'Op Error, Contact To Admin'),
                                                 (responderSet.sendData._sys_erorr = err),
-                                                reject(responderSet.sendData);
+                                                reject(responderSet.sendData));
                                         });
                                     }
                                     resolve(results);
@@ -836,10 +870,10 @@ module.exports = {
                 pool.query(query, [info_data.pub_id], function (error, results, fields) {
                     if (error) {
                         pool.rollback(function () {
-                            (responderSet.sendData._call = -1),
+                            ((responderSet.sendData._call = -1),
                                 (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                                 (responderSet.sendData._sys_erorr = error),
-                                reject(responderSet.sendData);
+                                reject(responderSet.sendData));
                         });
                     } else {
                         var query =
@@ -847,21 +881,21 @@ module.exports = {
                         pool.query(query, [info_data.pub_id], function (error, results, fields) {
                             if (error) {
                                 pool.rollback(function () {
-                                    (responderSet.sendData._call = -1),
+                                    ((responderSet.sendData._call = -1),
                                         (responderSet.sendData._error =
                                             'Op Error, Contact To Admin'),
                                         (responderSet.sendData._sys_erorr = error),
-                                        reject(responderSet.sendData);
+                                        reject(responderSet.sendData));
                                 });
                             } else {
                                 pool.commit(function (err) {
                                     if (err) {
                                         pool.rollback(function () {
-                                            (responderSet.sendData._call = -1),
+                                            ((responderSet.sendData._call = -1),
                                                 (responderSet.sendData._error =
                                                     'Op Error, Contact To Admin'),
                                                 (responderSet.sendData._sys_erorr = err),
-                                                reject(responderSet.sendData);
+                                                reject(responderSet.sendData));
                                         });
                                     }
                                     resolve(results);
@@ -885,10 +919,10 @@ module.exports = {
                     function (error, results, fields) {
                         if (error) {
                             pool.rollback(function () {
-                                (responderSet.sendData._call = -1),
+                                ((responderSet.sendData._call = -1),
                                     (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                                     (responderSet.sendData._sys_erorr = error),
-                                    reject(responderSet.sendData);
+                                    reject(responderSet.sendData));
                             });
                         } else {
                             if (results.insertId == 0) {
@@ -900,21 +934,21 @@ module.exports = {
                                 function (error, results, fields) {
                                     if (error) {
                                         pool.rollback(function () {
-                                            (responderSet.sendData._call = -1),
+                                            ((responderSet.sendData._call = -1),
                                                 (responderSet.sendData._error =
                                                     'Op Error, Contact To Admin'),
                                                 (responderSet.sendData._sys_erorr = error),
-                                                reject(responderSet.sendData);
+                                                reject(responderSet.sendData));
                                         });
                                     } else {
                                         pool.commit(function (err) {
                                             if (err) {
                                                 pool.rollback(function () {
-                                                    (responderSet.sendData._call = -1),
+                                                    ((responderSet.sendData._call = -1),
                                                         (responderSet.sendData._error =
                                                             'Op Error, Contact To Admin'),
                                                         (responderSet.sendData._sys_erorr = err),
-                                                        reject(responderSet.sendData);
+                                                        reject(responderSet.sendData));
                                                 });
                                             } else {
                                                 if (results.insertId == 0) {
@@ -925,10 +959,10 @@ module.exports = {
                                             }
                                         });
                                     }
-                                }
+                                },
                             );
                         }
-                    }
+                    },
                 );
             });
         });
@@ -938,10 +972,10 @@ module.exports = {
             'INSERT INTO tm_final_student_question_paper  SELECT * FROM tm_student_question_paper';
         pool.query(query, [insert_array], function (err, result) {
             if (err) {
-                (responderSet.sendData._call = -1),
+                ((responderSet.sendData._call = -1),
                     (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                     (responderSet.sendData._sys_erorr = err),
-                    reject(responderSet.sendData);
+                    reject(responderSet.sendData));
             } else {
                 resolve(result);
             }
@@ -962,10 +996,10 @@ module.exports = {
 
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -984,10 +1018,10 @@ module.exports = {
 
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1014,10 +1048,10 @@ module.exports = {
             insert_array.push($data);
             pool.query(query, [insert_array], function (err, result) {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1029,10 +1063,10 @@ module.exports = {
             var query = 'DELETE FROM utr_student_attendance WHERE student_id = ?';
             pool.query(query, [student_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1044,10 +1078,10 @@ module.exports = {
             var query = 'DELETE FROM ' + table_name;
             pool.query(query, (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1059,10 +1093,10 @@ module.exports = {
             var query = 'DELETE FROM tm_publish_test_list WHERE id = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1074,10 +1108,10 @@ module.exports = {
             var query = 'DELETE FROM tn_student_list WHERE sl_batch_no = ?';
             pool.query(query, [batch_no], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1089,10 +1123,10 @@ module.exports = {
             var query = 'DELETE FROM tm_final_student_test_list WHERE stl_publish_id = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1104,10 +1138,10 @@ module.exports = {
             var query = 'DELETE FROM tm_final_student_question_paper WHERE sqp_publish_id = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1125,10 +1159,10 @@ module.exports = {
                 'FROM tm_final_student_question_paper WHERE sqp_publish_id = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1140,10 +1174,10 @@ module.exports = {
             var query = 'UPDATE tm_publish_test_list SET is_uploaded = 1 WHERE id  = ?';
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve({ call: 1, data: result });
                 }
@@ -1162,10 +1196,10 @@ module.exports = {
 
             pool.query(query, [pub_id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1174,14 +1208,14 @@ module.exports = {
     },
     updateMasterIP: function (pool, data) {
         return new Promise((resolve, reject) => {
-            data =  `var ip_address = { host: '${data.ipAdress}'};
+            data = `var ip_address = { host: '${data.ipAdress}'};
                      module.exports = ip_address`;
             fs.writeFile('ip_data.js', data, function (err) {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(true);
                 }
@@ -1189,7 +1223,7 @@ module.exports = {
         });
     },
     uploadResultPerBatch: function (cURLConf, request, send_data) {
-        console.log(cURLConf.CURL_link.upload_exam_link,'=cURLConf.CURL_link.upload_exam_link')
+        console.log(cURLConf.CURL_link.upload_exam_link, '=cURLConf.CURL_link.upload_exam_link');
         return new Promise((resolve, reject) => {
             request.post(
                 {
@@ -1218,7 +1252,7 @@ module.exports = {
                             resolve({ call: 3, data: body });
                         }
                     }
-                }
+                },
             );
         });
     },
@@ -1243,10 +1277,10 @@ module.exports = {
                     LIMIT 10`;
             pool.query(query, [], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1262,10 +1296,10 @@ module.exports = {
                    `;
             pool.query(query, [], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1293,10 +1327,10 @@ module.exports = {
                     LIMIT 10`;
             pool.query(query, [id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1310,10 +1344,10 @@ module.exports = {
                  WHERE sqp_student_id = ?`;
             pool.query(query, [id], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1343,10 +1377,10 @@ module.exports = {
                 AND q_id = sqp_question_id`;
             pool.query(query, [], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }
@@ -1384,10 +1418,10 @@ module.exports = {
                 AND q_id = sqp_question_id`;
             pool.query(query, [], (err, result) => {
                 if (err) {
-                    (responderSet.sendData._call = -1),
+                    ((responderSet.sendData._call = -1),
                         (responderSet.sendData._error = 'Op Error, Contact To Admin'),
                         (responderSet.sendData._sys_erorr = err),
-                        reject(responderSet.sendData);
+                        reject(responderSet.sendData));
                 } else {
                     resolve(result);
                 }

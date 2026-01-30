@@ -4,3 +4,4 @@ package-lock.json
 pics
 db_backup
 .my.cnf
+.DS_Store

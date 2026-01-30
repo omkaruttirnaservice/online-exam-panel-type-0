@@ -4,14 +4,17 @@ $(function () {
     getAllExamList();
     $('#get-exam-list').on('click', function () {
         const examDate = $('#exam_date').val();
+        const examMode = $('#exam_mode').val();
 
         test_id_list = [];
+        console.log(exam_list, 'exam_list');
+
         test_id_list = exam_list.map(function (data) {
             return data.id;
         });
         $.post(
             getUrl() + 'v2/get-exam-list',
-            { exam_list: JSON.stringify(test_id_list), examDate },
+            { exam_list: JSON.stringify(test_id_list), examDate, examMode },
             function (data, status) {
                 if (status == 'success') {
                     if (typeof data === 'object') {
@@ -32,10 +35,16 @@ $(function () {
                 } else {
                     alert('Master Server Not Found');
                 }
-            }
+            },
         ).error(function (error) {
-            alert('Server Error');
             console.log(error);
+            const json = error?.responseJSON;
+            if (!json) {
+                alert('Server Error');
+                return;
+            }
+            const parsedJson = JSON.parse(json);
+            alert(parsedJson?.message || 'Server error');
         });
     });
 });
@@ -57,13 +66,22 @@ function getAllExamList() {
     });
 }
 function LoadExamList(list, table_name, type) {
+    console.log(list, 'list');
     exam_list = list;
     if (list.length > 0) {
         $(table_name).html('');
         list.forEach(function (value, index) {
             var _tr = '<tr>';
             if (type == 1) {
-                _tr += '<td>' + (index + 1) + '</td>' + '<td>' + value.mt_name + '</td>';
+                _tr +=
+                    '<td>' +
+                    (index + 1) +
+                    '</td>' +
+                    '<td>' +
+                    value.mt_name +
+                    ' <i class="fa fa-info-circle text-info" style="cursor:pointer;" onclick="showExamDetails(' +
+                    index +
+                    ')" title="View Exam Details"></i></td>';
                 if (value.ptl_is_test_done == '1') {
                     _tr +=
                         '<td><label class="btn-warning btn-sm" style="margin-right:10px;">Done!</label>' +
@@ -192,9 +210,26 @@ function LoadExamList(list, table_name, type) {
     } else {
         $('#new_exams_list_table').addClass('hide');
         $(table_name).html(
-            '<tr><td colspan="7" style="text-align:center"> No Exams Found</td></tr>'
+            '<tr><td colspan="7" style="text-align:center"> No Exams Found</td></tr>',
         );
     }
+}
+
+function showExamDetails(index) {
+    var exam = exam_list[index];
+    if (exam && exam.exam_details) {
+        var details = exam.exam_details;
+        $('#modal-batch-no').text(details.sl_batch_no || '-');
+        $('#modal-exam-date').text(details.sl_exam_date || '-');
+        $('#modal-exam-time').text(details.sl_exam_time || '-');
+        $('#modal-total-students').text(details.total_students || '-');
+    } else {
+        $('#modal-batch-no').text('-');
+        $('#modal-exam-date').text('-');
+        $('#modal-exam-time').text('-');
+        $('#modal-total-students').text('-');
+    }
+    $('#examDetailsModal').modal('show');
 }
 function markStudentAsAbsent(_this, event, id, batch_no) {
     prompt('Enter Authentication Password', '*******', 'password', function (value) {
@@ -227,7 +262,7 @@ function markStudentAsAbsent(_this, event, id, batch_no) {
                 } else {
                     alert('Master Server Not Found');
                 }
-            }
+            },
         ).error(function (error) {
             removeLoading();
             alert('Server Error');
@@ -299,7 +334,7 @@ function downloadStudent(pub_id, student_type) {
                         break;
                 }
             }
-        }
+        },
     );
 }
 
@@ -365,7 +400,7 @@ function takeExamBackupSql(pub_id, batch_no, cc) {
                         break;
                 }
             }
-        }
+        },
     );
 }
 function unsetExam(pub_id, batch_no, cc) {
@@ -394,7 +429,7 @@ function unsetExam(pub_id, batch_no, cc) {
                         break;
                 }
             }
-        }
+        },
     );
 }
 function takeExamBackup(pub_id, batch_no, cc) {
@@ -429,7 +464,7 @@ function takeExamBackup(pub_id, batch_no, cc) {
                                                 break;
                                             case 1:
                                                 alert(
-                                                    'Exam Saved Successfully.... Click Ok To Take Backup'
+                                                    'Exam Saved Successfully.... Click Ok To Take Backup',
                                                 );
                                                 takeExamBackupSql(pub_id, batch_no, cc);
                                                 break;
@@ -441,9 +476,9 @@ function takeExamBackup(pub_id, batch_no, cc) {
                                                 break;
                                         }
                                     }
-                                }
+                                },
                             );
-                        }
+                        },
                     );
                 }
             });

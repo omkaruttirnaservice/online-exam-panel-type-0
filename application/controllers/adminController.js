@@ -1,8 +1,8 @@
-var AdminModel = require('../model/adminModel');
-var responderSet = require('../config/_responderSet');
-var cURLConf = require('../config/curl.config');
-var request = require('request'); //requiring request module
-const fs = require('fs');
+var AdminModel = require("../model/adminModel");
+var responderSet = require("../config/_responderSet");
+var cURLConf = require("../config/curl.config");
+var request = require("request"); //requiring request module
+const fs = require("fs");
 
 var resultStatus = responderSet.checkResult;
 
@@ -19,56 +19,56 @@ var adminController = {
             });
     },
     adminHome: (req, res, next) => {
-        if (typeof req.session.Admin == 'undefined') {
+        if (typeof req.session.Admin == "undefined") {
             let message = req.session._loginMessage;
             delete req.session._loginMessage;
-            res.render('admin/index', {
+            res.render("admin/index", {
                 cc: 0,
-                c_name: '',
+                c_name: "",
                 message,
-                serverNo: process.env.SERVER_NO,
+                serverNo: process.env.SERVER_NO
             });
         } else {
-            res.redirect('/admin/exams');
+            res.redirect("/admin/exams");
         }
     },
     swHome: (req, res, next) => {
-        if (typeof req.session.Admin == 'undefined') {
-            res.render('sw/index', {
+        if (typeof req.session.Admin == "undefined") {
+            res.render("sw/index", {
                 cc: 0,
-                c_name: '',
-                serverNo: process.env.SERVER_NO,
+                c_name: "",
+                serverNo: process.env.SERVER_NO
             });
         } else {
-            res.redirect('/sw/exam_lock_status');
+            res.redirect("/sw/exam_lock_status");
         }
     },
     adminExams: (req, res, next) => {
-        res.render('admin/exams', {
+        res.render("admin/exams", {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
-            serverNo: process.env.SERVER_NO,
+            serverNo: process.env.SERVER_NO
         });
     },
 
     adminLoginAuth: (req, res, next) => {
         // console.log(process.env.SERVER_NO, '-server no');
         if (process?.env?.SERVER_NO == undefined || !process?.env?.SERVER_NO) {
-            req.session._loginMessage = 'Server number not set in env';
-            return res.redirect('/admin');
+            req.session._loginMessage = "Server number not set in env";
+            return res.redirect("/admin");
         }
         var data = req.body;
         AdminModel.checkAdminLoginAuth(res.pool, data)
             .then((result) => {
                 if (result.length == 0) {
-                    res.redirect('/admin');
+                    res.redirect("/admin");
                 } else {
                     req.session.Admin = {
                         admin_id: result[0].admin_id,
                         cc: result[0].cc,
-                        c_name: result[0].c_name,
+                        c_name: result[0].c_name
                     };
-                    res.redirect('/admin/exams');
+                    res.redirect("/admin/exams");
                 }
             })
             .catch((error) => {
@@ -77,15 +77,15 @@ var adminController = {
             });
     },
     getAdminnerView: (req, res, next) => {
-        res.render('admin/adminner', {
+        res.render("admin/adminner", {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
-            serverNo: process.env.SERVER_NO,
+            serverNo: process.env.SERVER_NO
         });
     },
     adminLogOut: (req, res, next) => {
         req.session.destroy(function (err) {
-            res.redirect('/admin');
+            res.redirect("/admin");
         });
     },
     ajaxGetExamList: function (req, res, next) {
@@ -117,17 +117,17 @@ var adminController = {
             });
     },
     getStudentAttendanceView: function (req, res, next) {
-        res.render('admin/student-attendance', {
+        res.render("admin/student-attendance", {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
-            serverNo: process.env.SERVER_NO,
+            serverNo: process.env.SERVER_NO
         });
     },
     getAllStudentsView: function (req, res, next) {
-        res.render('admin/all-students', {
+        res.render("admin/all-students", {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
-            serverNo: process.env.SERVER_NO,
+            serverNo: process.env.SERVER_NO
         });
     },
     getBatchStudentList: function (req, res, next) {
@@ -169,7 +169,7 @@ var adminController = {
         var data = req.params;
         var details = {
             exam: [],
-            student: [],
+            student: []
         };
         AdminModel.getExamStudentList(res.pool, data.pub_id)
             .then((result) => {
@@ -181,12 +181,12 @@ var adminController = {
                 return AdminModel.getSinglePublishInfo(res.pool, data.pub_id);
             })
             .then((result) => {
-                res.render('admin/exam-student-list', {
+                res.render("admin/exam-student-list", {
                     exam_info: result,
                     student_list: details.student,
                     cc: req.session.Admin.cc,
                     c_name: req.session.Admin.c_name,
-                    serverNo: process.env.SERVER_NO,
+                    serverNo: process.env.SERVER_NO
                 });
             })
             .catch((error) => {
@@ -228,20 +228,20 @@ var adminController = {
     getCURLExamList: function (req, res, next) {
         var data = req.body;
         exam_list = {
-            exam_list: JSON.parse(data.exam_list),
+            exam_list: JSON.parse(data.exam_list)
         };
-        console.log('Getting exam list from : ', cURLConf.CURL_link.new_exam_list);
+
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list,
                 body: JSON.stringify({ exam_list }),
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
-                },
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`
+                }
             },
             function (error, response, body) {
-                if (typeof response === 'undefined') {
+                if (typeof response === "undefined") {
                     res.status(200).send({ call: 999 });
                 } else {
                     if (!error && response.statusCode == 200) {
@@ -250,32 +250,35 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            },
+            }
         );
     },
 
     getCURLExamListV2: function (req, res, next) {
         const data = req.body;
-        console.log(data, 'data');
+        console.log(data, "data");
         let exam_list = {
             exam_list: JSON.parse(data.exam_list),
             examDate: data.examDate,
-            examMode: data.examMode,
+            examMode: data.examMode
         };
         console.log({ exam_list });
-        console.log('Getting exam list from : ', cURLConf.CURL_link.new_exam_list_v2);
+        console.log(
+            "Getting exam list from : ",
+            cURLConf.CURL_link.new_exam_list_v2
+        );
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list_v2,
                 body: JSON.stringify({ exam_list }),
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
-                },
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`
+                }
             },
             function (error, response, body) {
                 console.log(error, response, body);
-                if (typeof response === 'undefined') {
+                if (typeof response === "undefined") {
                     res.status(200).send({ call: 999 });
                 } else {
                     if (!error && response.statusCode == 200) {
@@ -284,17 +287,25 @@ var adminController = {
                         res.status(response.statusCode).json(body);
                     }
                 }
-            },
+            }
         );
     },
 
     getCURLCenterDetails: function (req, res, next) {
         var data = req.body;
         request(
-            cURLConf.CURL_link.get_center_data + '/' + data.center_code,
+            {
+                url:
+                    cURLConf.CURL_link.get_center_data + "/" + data.center_code,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`
+                }
+            },
+
             function (error, response, body) {
                 // res.status(response.statusCode).send(body);
-                if (typeof response === 'undefined') {
+                if (typeof response === "undefined") {
                     res.status(200).send({ call: 999 });
                 } else {
                     if (!error && response.statusCode == 200) {
@@ -303,13 +314,19 @@ var adminController = {
                             case 1:
                                 AdminModel.cleanAuthDetails(res.pool)
                                     .then((result) => {
-                                        return AdminModel.addAuthDetails(res.pool, json_data.data);
+                                        return AdminModel.addAuthDetails(
+                                            res.pool,
+                                            json_data.data
+                                        );
                                     })
                                     .then((result) => {
                                         res.status(200).send({ call: 1 });
                                     })
                                     .catch((error) => {
-                                        res.status(200).send({ call: 0, err: error });
+                                        res.status(200).send({
+                                            call: 0,
+                                            err: error
+                                        });
                                     });
                                 break;
                             default:
@@ -320,21 +337,30 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            },
+            }
         );
     },
     getCURLDownloadStudent: function (req, res, next) {
         var data = req.body;
         request(
-            cURLConf.CURL_link.download_student_batch +
-                '/' +
-                data.center_code +
-                '/' +
-                data.batch_list,
+            {
+                url:
+                    cURLConf.CURL_link.download_student_batch +
+                    "/" +
+                    data.center_code +
+                    "/" +
+                    data.batch_list,
+                headers: {
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`
+                }
+            },
+
             function (error, response, body) {
-                if (typeof response === 'undefined') {
+                if (typeof response === "undefined") {
                     res.status(200).send({ call: 999 });
                 } else {
+                    console.log(response, "res");
+                    console.log(body, "body");
                     if (!error && response.statusCode == 200) {
                         var json_data = JSON.parse(body);
                         console.log({ json_data });
@@ -344,7 +370,7 @@ var adminController = {
                                     .then((result) => {
                                         return AdminModel.addBatchToList(
                                             res.pool,
-                                            json_data.exam_student_list,
+                                            json_data.exam_student_list
                                         );
                                     })
                                     .then((result) => {
@@ -352,7 +378,10 @@ var adminController = {
                                     })
                                     .catch((error) => {
                                         console.log(error);
-                                        res.status(200).send({ call: 0, err: error });
+                                        res.status(200).send({
+                                            call: 0,
+                                            err: error
+                                        });
                                     });
                                 break;
                             default:
@@ -363,8 +392,51 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            },
+            }
         );
+
+        // request(
+        //   cURLConf.CURL_link.download_student_batch +
+        //     "/" +
+        //     data.center_code +
+        //     "/" +
+        //     data.batch_list,
+        //   function (error, response, body) {
+        //     if (typeof response === "undefined") {
+        //       res.status(200).send({ call: 999 });
+        //     } else {
+        //       console.log(response, "res");
+        //       console.log(body, "body");
+        //       if (!error && response.statusCode == 200) {
+        //         var json_data = JSON.parse(body);
+        //         console.log({ json_data });
+        //         switch (json_data.call) {
+        //           case 1:
+        //             AdminModel.cleanStudent(res.pool, data)
+        //               .then((result) => {
+        //                 return AdminModel.addBatchToList(
+        //                   res.pool,
+        //                   json_data.exam_student_list
+        //                 );
+        //               })
+        //               .then((result) => {
+        //                 res.status(200).send({ call: 1 });
+        //               })
+        //               .catch((error) => {
+        //                 console.log(error);
+        //                 res.status(200).send({ call: 0, err: error });
+        //               });
+        //             break;
+        //           default:
+        //             res.status(200).send({ call: 5 });
+        //             break;
+        //         }
+        //       } else {
+        //         res.status(response.statusCode).send(body);
+        //       }
+        //     }
+        //   }
+        // );
     },
     getCURLDownloadExam: function (req, res, next) {
         /**
@@ -373,13 +445,13 @@ var adminController = {
         var data = req.body;
         request(
             {
-                url: cURLConf.CURL_link.download_exam + '/' + data.id,
+                url: cURLConf.CURL_link.download_exam + "/" + data.id,
                 headers: {
-                    Authorization: `Bearer ${process.env.DE_TOKEN}`,
-                },
+                    Authorization: `Bearer ${process.env.DE_TOKEN}`
+                }
             },
             function (error, response, body) {
-                if (typeof response === 'undefined') {
+                if (typeof response === "undefined") {
                     res.status(200).send({ call: 999 });
                 } else {
                     if (!error && response.statusCode == 200) {
@@ -387,23 +459,26 @@ var adminController = {
 
                         switch (json_data.call) {
                             case 1:
-                                AdminModel.cleanPublish(res.pool, json_data.exam_info[0].id)
+                                AdminModel.cleanPublish(
+                                    res.pool,
+                                    json_data.exam_info[0].id
+                                )
                                     .then((data) => {
                                         return AdminModel.addPublishList(
                                             res.pool,
-                                            json_data.exam_info,
+                                            json_data.exam_info
                                         );
                                     })
                                     .then((data) => {
                                         return AdminModel.cleanQuestionPaper(
                                             res.pool,
-                                            json_data.exam_info[0].ptl_test_id,
+                                            json_data.exam_info[0].ptl_test_id
                                         );
                                     })
                                     .then((data) => {
                                         return AdminModel.addQuestionPaper(
                                             res.pool,
-                                            json_data.exam_question,
+                                            json_data.exam_question
                                         );
                                     })
                                     .then(() => {
@@ -413,7 +488,7 @@ var adminController = {
                                          * */
                                         return AdminModel.cleanPublishTestByPost(
                                             res.pool,
-                                            json_data.exam_info[0].ptl_test_id,
+                                            json_data.exam_info[0].ptl_test_id
                                         );
                                     })
                                     .then(() => {
@@ -422,26 +497,33 @@ var adminController = {
                                          */
                                         return AdminModel.addPublishTestByPost(
                                             res.pool,
-                                            json_data._postsList,
+                                            json_data._postsList
                                         );
                                     })
                                     .then(async (data) => {
-                                        if (json_data?._mockStudentsList?.length === 0) {
+                                        if (
+                                            json_data?._mockStudentsList
+                                                ?.length === 0
+                                        ) {
                                             return true;
                                         }
 
-                                        const { center_code, tm_allow_to } = json_data.exam_info[0];
+                                        const { center_code, tm_allow_to } =
+                                            json_data.exam_info[0];
 
                                         // cleaning up previous students
-                                        await AdminModel.cleanStudent(res.pool, {
-                                            center_code,
-                                            batch_list: tm_allow_to,
-                                        });
+                                        await AdminModel.cleanStudent(
+                                            res.pool,
+                                            {
+                                                center_code,
+                                                batch_list: tm_allow_to
+                                            }
+                                        );
 
                                         // add new mock studens list to database
                                         await AdminModel.addBatchToList(
                                             res.pool,
-                                            json_data?._mockStudentsList || [],
+                                            json_data?._mockStudentsList || []
                                         );
                                         return true;
                                     })
@@ -450,7 +532,10 @@ var adminController = {
                                     })
                                     .catch((error) => {
                                         console.log(error);
-                                        res.status(200).send({ call: -1, error: error });
+                                        res.status(200).send({
+                                            call: -1,
+                                            error: error
+                                        });
                                     });
                                 break;
                             case 2:
@@ -467,7 +552,7 @@ var adminController = {
                         res.status(response.statusCode).send(body);
                     }
                 }
-            },
+            }
         );
     },
     getCURLSendData: function (req, res, next) {
@@ -475,7 +560,7 @@ var adminController = {
         var send_data = {
             student_list: [],
             exam_paper: [],
-            pub_id: data.pub_id,
+            pub_id: data.pub_id
         };
 
         AdminModel.getDoneExamsStudentListData(res.pool, data.pub_id)
@@ -484,7 +569,10 @@ var adminController = {
                     return [];
                 } else {
                     send_data.student_list = res_data;
-                    return AdminModel.getDoneExamsStudentExamData(res.pool, data.pub_id);
+                    return AdminModel.getDoneExamsStudentExamData(
+                        res.pool,
+                        data.pub_id
+                    );
                 }
             })
             .then((result) => {
@@ -492,12 +580,19 @@ var adminController = {
                     return { call: 4 };
                 } else {
                     send_data.exam_paper = result;
-                    return AdminModel.uploadResultPerBatch(cURLConf, request, send_data);
+                    return AdminModel.uploadResultPerBatch(
+                        cURLConf,
+                        request,
+                        send_data
+                    );
                 }
             })
             .then((result) => {
                 if (result.call == 1) {
-                    return AdminModel.updatePublishExamUploaded(res.pool, data.pub_id);
+                    return AdminModel.updatePublishExamUploaded(
+                        res.pool,
+                        data.pub_id
+                    );
                 } else {
                     return result;
                 }
@@ -513,7 +608,10 @@ var adminController = {
         var data = req.body;
         AdminModel.addPublishList(res.pool, data.publish_data)
             .then(function (res_data) {
-                return AdminModel.addBatchToList(res.pool, data.batch_to_publish);
+                return AdminModel.addBatchToList(
+                    res.pool,
+                    data.batch_to_publish
+                );
             })
             .then(function (res_data) {
                 return AdminModel.addTestInfo(res.pool, data.test_info);
@@ -573,7 +671,10 @@ var adminController = {
                 return AdminModel.updateExamIsDone(res.pool, data);
             })
             .then((result) => {
-                return AdminModel.clearTableRecored(res.pool, 'utr_student_attendance');
+                return AdminModel.clearTableRecored(
+                    res.pool,
+                    "utr_student_attendance"
+                );
             })
             .then((result) => {
                 res.status(200).send({ call: 1 });
@@ -628,7 +729,7 @@ var adminController = {
 
             res.status(200).send({ call: 1 });
         } catch (error) {
-            console.error('Error clearing tables:', error);
+            console.error("Error clearing tables:", error);
             res.status(200).send(error);
         }
     },
@@ -650,11 +751,11 @@ var adminController = {
     getExamLockStatus: function (req, res, next) {
         AdminModel.getExamLockStatus(res.pool)
             .then((result) => {
-                res.render('admin/exam-lock-list', {
+                res.render("admin/exam-lock-list", {
                     cc: req.session.Admin.cc,
                     student_list: result,
                     c_name: req.session.Admin.c_name,
-                    serverNo: process.env.SERVER_NO,
+                    serverNo: process.env.SERVER_NO
                 });
             })
             .catch((error) => {
@@ -665,9 +766,9 @@ var adminController = {
     swExamLockStatus: function (req, res, next) {
         AdminModel.getExamLockStatus(res.pool)
             .then((result) => {
-                res.render('admin/sw-exam-lock-list', {
+                res.render("admin/sw-exam-lock-list", {
                     student_list: result,
-                    serverNo: process.env.SERVER_NO,
+                    serverNo: process.env.SERVER_NO
                 });
             })
             .catch((error) => {
@@ -704,7 +805,7 @@ var adminController = {
             });
     },
     unlockAllUser: function (req, res, next) {
-        AdminModel.clearTableRecored(res.pool, 'utr_student_attendance')
+        AdminModel.clearTableRecored(res.pool, "utr_student_attendance")
             .then((result) => {
                 res.status(200).send({ call: 1 });
             })
@@ -716,11 +817,11 @@ var adminController = {
     getLiveExamStatus: function (req, res, next) {
         AdminModel.getLiveExamStatus(res.pool)
             .then((result) => {
-                res.render('admin/live-exam-status', {
+                res.render("admin/live-exam-status", {
                     cc: req.session.Admin.cc,
                     student_list: result,
                     c_name: req.session.Admin.c_name,
-                    serverNo: process.env.SERVER_NO,
+                    serverNo: process.env.SERVER_NO
                 });
             })
             .catch((error) => {
@@ -730,26 +831,26 @@ var adminController = {
     },
 
     getUploadBannerView: function (req, res, next) {
-        res.render('admin/upload-banner-view.pug', {
+        res.render("admin/upload-banner-view.pug", {
             cc: req.session.Admin.cc,
             c_name: req.session.Admin.c_name,
-            serverNo: process.env.SERVER_NO,
+            serverNo: process.env.SERVER_NO
         });
     },
 
     postUploadBanner: function (req, res, next) {
         let bannerImage = req.files.banner;
         console.log(bannerImage);
-        let fileName = `bannerImage.${bannerImage.name.split('.')[1]}`;
+        let fileName = `bannerImage.${bannerImage.name.split(".")[1]}`;
 
         bannerImage.mv(`./public/img/banner-image/${fileName}`, function (err) {
             if (err) {
                 return res.status(200).json({
-                    call: 0,
+                    call: 0
                 });
             } else {
                 return res.status(200).json({
-                    call: 1,
+                    call: 1
                 });
             }
         });
@@ -759,13 +860,22 @@ var adminController = {
         var data = req.body;
         AdminModel.clearExamFormPublish(res.pool, data.pub_id)
             .then((result) => {
-                return AdminModel.clearExamFormStudentList(res.pool, data.batch_no);
+                return AdminModel.clearExamFormStudentList(
+                    res.pool,
+                    data.batch_no
+                );
             })
             .then((result) => {
-                return AdminModel.clearExamFormStudentTestList(res.pool, data.pub_id);
+                return AdminModel.clearExamFormStudentTestList(
+                    res.pool,
+                    data.pub_id
+                );
             })
             .then((result) => {
-                return AdminModel.clearExamFormStudentQuestionPaper(res.pool, data.pub_id);
+                return AdminModel.clearExamFormStudentQuestionPaper(
+                    res.pool,
+                    data.pub_id
+                );
             })
             .then((result) => {
                 res.status(200).send({ call: 1 });
@@ -778,9 +888,9 @@ var adminController = {
     getValueListPost: (request, response) => {
         AdminModel.getValueListFromDbPost(response.pool)
             .then((result) => {
-                response.render('admin/get-value-list-post', {
+                response.render("admin/get-value-list-post", {
                     list: result,
-                    batch: 'All',
+                    batch: "All"
                 });
             })
             .catch((error) => {
@@ -792,9 +902,9 @@ var adminController = {
         let { id } = request.params;
         AdminModel.getValueListFromDb(response.pool, id)
             .then((result) => {
-                response.render('admin/get-value-list', {
+                response.render("admin/get-value-list", {
                     list: result,
-                    batch: 'All',
+                    batch: "All"
                 });
             })
             .catch((error) => {
@@ -807,21 +917,29 @@ var adminController = {
         AdminModel.setUpdateNull(response.pool, Number(data.id))
             .then((result) => {
                 // console.log(result);
-                return AdminModel.setUpdateAccept(response.pool, data.id, Number(data.c));
+                return AdminModel.setUpdateAccept(
+                    response.pool,
+                    data.id,
+                    Number(data.c)
+                );
             })
             .then((result) => {
                 console.log(result);
-                return AdminModel.setUpdateMoreAccept(response.pool, data.id, Number(data.i));
+                return AdminModel.setUpdateMoreAccept(
+                    response.pool,
+                    data.id,
+                    Number(data.i)
+                );
             })
             .then((result) => {
                 console.log(result);
-                response.redirect('/admin/get-value');
+                response.redirect("/admin/get-value");
             })
             .catch((error) => {
                 console.log(error);
                 response.status(200).send({ call: 0, data: error });
             });
-    },
+    }
 };
 
 module.exports = adminController;

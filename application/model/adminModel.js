@@ -1236,6 +1236,7 @@ module.exports = {
                     body: JSON.stringify(send_data),
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${process.env.DE_TOKEN}`
                     },
                 },
                 function (error, response, body) {

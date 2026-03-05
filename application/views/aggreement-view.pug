@@ -6,6 +6,9 @@ block aggrement_page_css_link
 block inline_css
 
 block content
+    - var _isShowClearResponse = test_info.is_show_clear_response == 1;
+    - var _isShowMarkForReview = test_info.is_show_mark_for_review == 1;
+
     .container-fluid
         .row
             .col-xs-8.col-sm-8.col-md-8.col-lg-8(style='margin-top: 10px;')
@@ -70,12 +73,13 @@ block content
                                         li
                                             img(src="/img/exam_icon/correct_sq.png")
                                             span  You have answered the question.
-                                        li
-                                            img(src="/img/exam_icon/mark_review_sq.png")
-                                            span  You have marked question for review.
-                                        li
-                                            img(src="/img/exam_icon/ans_mark_for_review_sq.png")
-                                            span  You have answered and marked question for review.
+                                        if _isShowMarkForReview
+                                            li
+                                                img(src="/img/exam_icon/mark_review_sq.png")
+                                                span  You have marked question for review.
+                                            li
+                                                img(src="/img/exam_icon/ans_mark_for_review_sq.png")
+                                                span  You have answered and marked question for review.
                                     
                                 li Click on the question number to navigate. Use 'Save & Next' to save your answer and move to the next question.
 
@@ -161,12 +165,14 @@ block content
                                         li
                                             img(src="/img/exam_icon/correct_sq.png")
                                             span &nbsp;उत्तर दिलेले (You have answered the question.)
-                                        li
-                                            img(src="/img/exam_icon/mark_review_sq.png")
-                                            span &nbsp;पुनरावलोकनासाठी चिन्हांकित (You have marked question for review.)
-                                        li
-                                            img(src="/img/exam_icon/ans_mark_for_review_sq.png")
-                                            span &nbsp;उत्तर दिलेले आणि पुनरावलोकनासाठी चिन्हांकित (You have answered and marked question for review.)
+
+                                        if _isShowMarkForReview
+                                            li
+                                                img(src="/img/exam_icon/mark_review_sq.png")
+                                                span &nbsp;पुनरावलोकनासाठी चिन्हांकित (You have marked question for review.)
+                                            li
+                                                img(src="/img/exam_icon/ans_mark_for_review_sq.png")
+                                                span &nbsp;उत्तर दिलेले आणि पुनरावलोकनासाठी चिन्हांकित (You have answered and marked question for review.)
 
                                 li प्रश्न क्रमांकावर क्लिक करून आपण प्रश्नांमध्ये जाऊ शकता. ‘सेव्ह व पुढे’ वर क्लिक केल्यास उत्तर जतन होईल आणि पुढील प्रश्न दिसेल.
                                 li उत्तर निवडण्यासाठी संबंधित पर्यायावर क्लिक करा.

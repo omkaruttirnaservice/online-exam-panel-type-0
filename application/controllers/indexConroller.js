@@ -78,7 +78,9 @@ var indexController = {
                             exam_time: db_result.mt_test_time,
                             exam_total_question: db_result.mt_total_test_question,
                             exam_info: (JSON.parse(db_result.ptl_test_info))[0],
-                            batch_no: db_result.tm_allow_to 
+                            batch_no: db_result.tm_allow_to,
+                            is_show_mark_for_review: db_result.is_show_mark_for_review,
+                            is_show_clear_response: db_result.is_show_clear_response
                         };
                         res.redirect('/add-student');
                     }).catch(function(error_data){

@@ -22,13 +22,14 @@ var last_index = -1;
 var auto_save_time_q = 20;
 
 var Mytest = function () {
-    (this.configTest = function (tbi, qts, callback) {
+    ((this.configTest = function (tbi, qts, callback) {
         if (tbi.length > 0) {
             var test_info = tbi[0];
             test_name = test_info.test_name;
         } else {
             test_name = 0;
         }
+
         test_question = qts;
         callback(test_question);
     }), //this.configTest = function(qts,callback){}
@@ -43,10 +44,7 @@ var Mytest = function () {
 
             var main_topic_name = '';
             $.each(qty_list, function (key, value) {
-                if (
-                    main_topic_name != value.main_topic_name &&
-                    _test_mode == 1
-                ) {
+                if (main_topic_name != value.main_topic_name && _test_mode == 1) {
                     main_topic_name = value.main_topic_name;
                     $('#question-btn').append(
                         '<div class="form-group">' +
@@ -55,7 +53,7 @@ var Mytest = function () {
                             capitalize(main_topic_name) +
                             '</strong></p>' +
                             '</center>' +
-                            '</div>'
+                            '</div>',
                     );
                     question_print_count = 1;
                 }
@@ -79,7 +77,7 @@ var Mytest = function () {
                                 key +
                                 ')">' +
                                 question_print_count +
-                                '</a>'
+                                '</a>',
                         );
                     } else {
                         unans_review_count += 1;
@@ -90,7 +88,7 @@ var Mytest = function () {
                                 key +
                                 ')">' +
                                 question_print_count +
-                                '</a>'
+                                '</a>',
                         );
                     }
                 } else {
@@ -104,7 +102,7 @@ var Mytest = function () {
                                 key +
                                 ')">' +
                                 question_print_count +
-                                '</a>'
+                                '</a>',
                         );
                     } else {
                         $('#question-btn').append(
@@ -114,34 +112,27 @@ var Mytest = function () {
                                 key +
                                 ')">' +
                                 question_print_count +
-                                '</a>'
+                                '</a>',
                         );
                     }
                 } // main if-else
                 question_print_count = parseInt(question_print_count);
                 question_print_count++;
             }); //  $.each(){}
-            this.makeDefaultUpdate(
-                ans_review_count,
-                ans_not_ans,
-                ans_done,
-                unans_review_count
-            );
+            this.makeDefaultUpdate(ans_review_count, ans_not_ans, ans_done, unans_review_count);
         }),
         (this.makeDefaultUpdate = function (
             ans_review_count,
             ans_not_ans,
             ans_done,
-            unans_review_count
+            unans_review_count,
         ) {
             $('#q-ans-done').html(this.setPreZero(ans_done));
             // $('#q-not-ans-done').html(ans_not_ans+' Not Answer');
             $('#q-nans-review').html(this.setPreZero(unans_review_count));
             $('#q-ans-review').html(this.setPreZero(ans_review_count));
             $('#q-not-done').html(this.setPreZero(ans_not_ans));
-            $('#i-btn-view-' + current_question_index).addClass(
-                'selected-question'
-            );
+            $('#i-btn-view-' + current_question_index).addClass('selected-question');
         }),
         (this.setPreZero = function (data) {
             if (data == 0) {
@@ -194,37 +185,26 @@ var Mytest = function () {
 
                 if (parseInt(question_array.q_display_type) == 1) {
                     var q = this._printTypeOne(question_array, index_id);
-                    $('#i_test_type_text').html(
-                        capitalize(question_array.main_topic_name)
-                    );
+                    $('#i_test_type_text').html(capitalize(question_array.main_topic_name));
                     //$('#i_test_type_text').html("Single Answer Type");
                 }
 
                 if (parseInt(question_array.q_display_type) == 3) {
                     var q = this._printTypeThree(question_array, index_id);
-                    $('#i_test_type_text').html(
-                        capitalize(question_array.main_topic_name)
-                    );
+                    $('#i_test_type_text').html(capitalize(question_array.main_topic_name));
                 }
 
                 if (parseInt(question_array.q_display_type) == 4) {
                     var q = this._printTypeFour(question_array, index_id);
-                    $('#i_test_type_text').html(
-                        capitalize(question_array.main_topic_name)
-                    );
+                    $('#i_test_type_text').html(capitalize(question_array.main_topic_name));
                 }
 
                 if (question_array.q_ask_in != '') {
                     if (question_array.q_ask_in.length < 25) {
-                        $('#i-ask-in')
-                            .html(question_array.q_ask_in)
-                            .parent()
-                            .removeClass('hide');
+                        $('#i-ask-in').html(question_array.q_ask_in).parent().removeClass('hide');
                     } else {
                         $('#i-ask-in')
-                            .html(
-                                question_array.q_ask_in.substring(0, 25) + '...'
-                            )
+                            .html(question_array.q_ask_in.substring(0, 25) + '...')
                             .parent()
                             .removeClass('hide');
                     }
@@ -251,22 +231,16 @@ var Mytest = function () {
                 $('#main-pater-row').html(q);
                 q = '';
                 $('#i-question-number').html('Q.' + (parseInt(index_id) + 1));
-                $('#question-btn')
-                    .find('button')
-                    .removeClass('selected-question');
+                $('#question-btn').find('button').removeClass('selected-question');
                 $('#question-btn').find('a').removeClass('selected-question');
                 $('#question-btn')
                     .children('#i-btn-view-' + current_question_index)
                     .addClass('selected-question');
                 scoll_height = $('#question-btn');
-                row = $('#question-btn').children(
-                    '#i-btn-view-' + current_question_index
-                );
+                row = $('#question-btn').children('#i-btn-view-' + current_question_index);
 
                 /* $('#question-btn').animate({scrollTop: row.offset().top - (scoll_height.height())}, 10 );*/
-                $('#i-btn-view-' + current_question_index).addClass(
-                    'selected-question'
-                );
+                $('#i-btn-view-' + current_question_index).addClass('selected-question');
                 loadMathjax();
             } else {
                 alert('question out of range');
@@ -280,8 +254,7 @@ var Mytest = function () {
             var col_1 = JSON.parse(question.q_col_a);
             var col_2 = JSON.parse(question.q_col_b);
             var _col_tr = '';
-            var max_lenth =
-                col_1.length >= col_2.length ? col_1.length : col_2.length;
+            var max_lenth = col_1.length >= col_2.length ? col_1.length : col_2.length;
             var mat_data = JSON.parse(question.q_mat_data);
             var mat_col_count = mat_data[0].length;
             var mat_row_count = mat_data.length;
@@ -298,20 +271,14 @@ var Mytest = function () {
                             matrix_head += '<th></th>';
                         } else {
                             matrix_head +=
-                                '<th>' +
-                                String.fromCharCode(64 + parseInt(m_col)) +
-                                '</th>';
+                                '<th>' + String.fromCharCode(64 + parseInt(m_col)) + '</th>';
                         }
                     } // if (!m_row){}
 
                     if (!m_col) {
-                        matrix_body +=
-                            '<td>' +
-                            String.fromCharCode(97 + parseInt(m_row)) +
-                            '</td>';
+                        matrix_body += '<td>' + String.fromCharCode(97 + parseInt(m_row)) + '</td>';
                     } else {
-                        matrix_body +=
-                            '<td>' + mat_data[m_row][m_col - 1] + '</td>';
+                        matrix_body += '<td>' + mat_data[m_row][m_col - 1] + '</td>';
                     }
                 } // for(){}
 
@@ -323,7 +290,7 @@ var Mytest = function () {
                     index_id,
                     m_row,
                     String.fromCharCode(97 + parseInt(m_row)),
-                    question.student_ans
+                    question.student_ans,
                 );
                 and_option += '</div>';
             } //for(){}
@@ -335,10 +302,7 @@ var Mytest = function () {
                 _col_tr += '<tr>';
 
                 if (typeof col_1[i] == 'undefined') {
-                    _col_tr +=
-                        '<td style="text-align: left !important">' +
-                        cap_a +
-                        ')&nbsp</td>';
+                    _col_tr += '<td style="text-align: left !important">' + cap_a + ')&nbsp</td>';
                 } else {
                     _col_tr +=
                         '<td style="text-align: left !important">' +
@@ -349,10 +313,7 @@ var Mytest = function () {
                 }
 
                 if (typeof col_2[i] == 'undefined') {
-                    _col_tr +=
-                        '<td style="text-align: left !important">' +
-                        small_a +
-                        ')&nbsp</td>';
+                    _col_tr += '<td style="text-align: left !important">' + small_a + ')&nbsp</td>';
                 } else {
                     _col_tr +=
                         '<td style="text-align: left !important">' +
@@ -457,55 +418,22 @@ var Mytest = function () {
             var text_c = 'Assertion is True, Reason is False';
             var text_d = 'Assertion is False, Reason is True';
 
-            q += this.setOptionData(
-                text_a,
-                '0',
-                index_id,
-                1,
-                'a',
-                question.student_ans
-            );
-            q += this.setOptionData(
-                text_b,
-                '0',
-                index_id,
-                2,
-                'b',
-                question.student_ans
-            );
-            q += this.setOptionData(
-                text_c,
-                '0',
-                index_id,
-                3,
-                'c',
-                question.student_ans
-            );
-            q += this.setOptionData(
-                text_d,
-                '0',
-                index_id,
-                4,
-                'd',
-                question.student_ans
-            );
+            q += this.setOptionData(text_a, '0', index_id, 1, 'a', question.student_ans);
+            q += this.setOptionData(text_b, '0', index_id, 2, 'b', question.student_ans);
+            q += this.setOptionData(text_c, '0', index_id, 3, 'c', question.student_ans);
+            q += this.setOptionData(text_d, '0', index_id, 4, 'd', question.student_ans);
 
             q += '</div>';
             return q;
-        });
-    (this._printTypeOne = function (question, index_id) {
+        }));
+    ((this._printTypeOne = function (question, index_id) {
         /**
          * single question display method for type_one type question
          * @type {String}
          */
-        var q =
-            '<div class="col-sm-12 question-panel">' +
-            '<p>' +
-            question.q +
-            '</p>';
+        var q = '<div class="col-sm-12 question-panel">' + '<p>' + question.q + '</p>';
         if (question.q_i_q != 0) {
-            q +=
-                '<center>' + '<img src="' + question.q_i_q + '">' + '</center>';
+            q += '<center>' + '<img src="' + question.q_i_q + '">' + '</center>';
         }
         q += '</div>';
 
@@ -517,7 +445,7 @@ var Mytest = function () {
             index_id,
             1,
             'a',
-            question.student_ans
+            question.student_ans,
         );
         q += this.setOptionData(
             question.q_b,
@@ -525,7 +453,7 @@ var Mytest = function () {
             index_id,
             2,
             'b',
-            question.student_ans
+            question.student_ans,
         );
         q += this.setOptionData(
             question.q_c,
@@ -533,7 +461,7 @@ var Mytest = function () {
             index_id,
             3,
             'c',
-            question.student_ans
+            question.student_ans,
         );
         q += this.setOptionData(
             question.q_d,
@@ -541,28 +469,23 @@ var Mytest = function () {
             index_id,
             4,
             'd',
-            question.student_ans
+            question.student_ans,
         );
-        q += this.setOptionData(
-            question.q_e,
-            question.q_i_e,
-            index_id,
-            5,
-            'e',
-            question.student_ans
-        );
+        if (question.q_e) {
+            q += this.setOptionData(
+                question.q_e,
+                question.q_i_e,
+                index_id,
+                5,
+                'e',
+                question.student_ans,
+            );
+        }
         q += '</div>';
 
         return q;
     }),
-        (this.setOptionData = function (
-            option_text,
-            option_image,
-            index_id,
-            btn_no,
-            value,
-            ans
-        ) {
+        (this.setOptionData = function (option_text, option_image, index_id, btn_no, value, ans) {
             /**
              * this method sets each option with value and if set then a checked mark too
              * awesome dynamic method , isn't it?  :)
@@ -632,11 +555,7 @@ var Mytest = function () {
             }
             return list;
         }),
-        (this.updateTempArrayList = function (
-            _temp_question,
-            _temp_ans,
-            callback
-        ) {
+        (this.updateTempArrayList = function (_temp_question, _temp_ans, callback) {
             //student_temp_ans_list = this.checkForTempArrayDuplicate(student_temp_ans_list, current_question_index);
             student_temp_ans_list = [];
             var user_and_data = {
@@ -661,15 +580,13 @@ var Mytest = function () {
                 success: function (data) {
                     var data1 = String(data).match(/</);
                     if (data1 != null) {
-                        var m1 =
-                            'Data Stream Error.Please contact to Staff [ परत लॉगिन करा ]';
+                        var m1 = 'Data Stream Error.Please contact to Staff [ परत लॉगिन करा ]';
                         redirectMessage(m1, _getUrl());
                         return false;
                     }
                     var data1 = String(data).match(/{}/);
                     if (data1 != null) {
-                        var m1 =
-                            'Data Stream Error.Please contact to Staff [ परत लॉगिन करा ]';
+                        var m1 = 'Data Stream Error.Please contact to Staff [ परत लॉगिन करा ]';
                         redirectMessage(m1, _getUrl());
                         return false;
                     }
@@ -678,8 +595,7 @@ var Mytest = function () {
                         json = JSON.parse(data);
                     }
                     if (json.call == 2) {
-                        var m1 =
-                            'Session Timeout.Please contact to Staff [ परत लॉगिन करा ]';
+                        var m1 = 'Session Timeout.Please contact to Staff [ परत लॉगिन करा ]';
                         redirectMessage(m1, _getUrl());
                         return false;
                     } else {
@@ -689,19 +605,16 @@ var Mytest = function () {
                 error: function (error_data) {
                     switch (error_data.status) {
                         case 500:
-                            var m1 =
-                                '500 .Please contact to Staff [ परत लॉगिन करा ]';
+                            var m1 = '500 .Please contact to Staff [ परत लॉगिन करा ]';
                             redirectMessage(m1, _getUrl());
                             break;
 
                         case 404:
-                            var m1 =
-                                '404 .Please contact to Staff [ परत लॉगिन करा ]';
+                            var m1 = '404 .Please contact to Staff [ परत लॉगिन करा ]';
                             redirectMessage(m1, _getUrl());
                             break;
                         case 400:
-                            var m1 =
-                                '400 .Please contact to Staff [ परत लॉगिन करा ]';
+                            var m1 = '400 .Please contact to Staff [ परत लॉगिन करा ]';
                             redirectMessage(m1, _getUrl());
                             break;
                         default:
@@ -720,7 +633,7 @@ var Mytest = function () {
                         'info', //AVAILABLE TYPES: "error", "info", "success", "warning"
                         {
                             msg: 'Your exam has been submitted successfully.',
-                        }
+                        },
                     );
                     setTimeout(function () {
                         location.replace(
@@ -728,19 +641,16 @@ var Mytest = function () {
                                 'climax/' +
                                 _t_s_i[0].Exam.published_id +
                                 '/' +
-                                _t_s_i[0].StudentInfo.id
+                                _t_s_i[0].StudentInfo.id,
                         );
                     }, 1000);
                 } else {
-                    retryMsg(
-                        'Unable to submit your exam,try again',
-                        function (type) {
-                            mytest.submitRetry(_data);
-                        }
-                    );
+                    retryMsg('Unable to submit your exam,try again', function (type) {
+                        mytest.submitRetry(_data);
+                    });
                 }
             });
-        });
+        }));
 }; // end of class
 
 var mytest = new Mytest(); // set an object for Mytest;
@@ -765,9 +675,7 @@ $(function () {
             mytest.configTest(tbi, qts, function (test_question) {
                 $('#i-test-name').html(test_name);
                 ans_review_count = test_question.length;
-                $('#i-question-palet').html(
-                    'Question Pallet Of ' + test_question.length
-                );
+                $('#i-question-palet').html('Question Pallet Of ' + test_question.length);
                 mytest.setQuestionNumbers(test_question);
 
                 $.each(test_question, function (q_index, q_value) {
@@ -784,8 +692,7 @@ $(function () {
 
     $(document).on('click', '.avoid_click', function (e) {
         if (test_question[current_question_index].student_ans != '') {
-            var quick_ans_ckeck =
-                test_question[current_question_index].student_ans;
+            var quick_ans_ckeck = test_question[current_question_index].student_ans;
             switch (quick_ans_ckeck) {
                 case 'e':
                     $('#i-opt-5').prop('checked', true);
@@ -836,18 +743,13 @@ $(function () {
             if (_tmp_ans.length > 0) {
                 var _temp_question = test_question[current_question_index];
                 var _temp_ans = _tmp_ans;
-                mytest.updateTempArrayList(
-                    _temp_question,
-                    _temp_ans,
-                    function (user_and_data) {
-                        test_question[current_question_index].student_ans =
-                            _tmp_ans;
-                        // student_temp_ans_list.push(user_and_data);
-                        $('#i_test_save_only-12').addClass('hide');
-                        $('#i_test_mark_for_review').prop('disabled', false);
-                        mytest.setQuestionNumbers(test_question);
-                    }
-                );
+                mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
+                    test_question[current_question_index].student_ans = _tmp_ans;
+                    // student_temp_ans_list.push(user_and_data);
+                    $('#i_test_save_only-12').addClass('hide');
+                    $('#i_test_mark_for_review').prop('disabled', false);
+                    mytest.setQuestionNumbers(test_question);
+                });
             }
         }
     });
@@ -857,56 +759,41 @@ $(function () {
             if (_tmp_ans.length > 0) {
                 var _temp_question = test_question[current_question_index];
                 var _temp_ans = _tmp_ans;
-                mytest.updateTempArrayList(
-                    _temp_question,
-                    _temp_ans,
-                    function (user_and_data) {
-                        test_question[current_question_index].student_ans =
-                            _tmp_ans;
-                        // student_temp_ans_list.push(user_and_data);
-                        $('#i_test_save_only').addClass('hide');
-                        $('#i_test_mark_for_review').prop('disabled', false);
+                mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
+                    test_question[current_question_index].student_ans = _tmp_ans;
+                    // student_temp_ans_list.push(user_and_data);
+                    $('#i_test_save_only').addClass('hide');
+                    $('#i_test_mark_for_review').prop('disabled', false);
 
-                        var scroll_pos = $(
-                            '#i-btn-view-' + (current_question_index + 1)
-                        ).position().top;
-                        if (typeof scroll_pos != 'undefined') {
-                            if (scroll_pos > 160) {
-                                $('#question-btn').scrollTop(
-                                    $('#question-btn').scrollTop() +
-                                        $(
-                                            '#i-btn-view-' +
-                                                (current_question_index + 1)
-                                        ).position().top -
-                                        $('#question-btn').height() / 1.3
-                                );
-                            }
+                    var scroll_pos = $('#i-btn-view-' + (current_question_index + 1)).position()
+                        .top;
+                    if (typeof scroll_pos != 'undefined') {
+                        if (scroll_pos > 160) {
+                            $('#question-btn').scrollTop(
+                                $('#question-btn').scrollTop() +
+                                    $('#i-btn-view-' + (current_question_index + 1)).position()
+                                        .top -
+                                    $('#question-btn').height() / 1.3,
+                            );
                         }
-
-                        mytest.setQuestionNumbers(test_question);
-                        mytest.getQuestionView(
-                            test_question,
-                            current_question_index + 1
-                        );
                     }
-                );
+
+                    mytest.setQuestionNumbers(test_question);
+                    mytest.getQuestionView(test_question, current_question_index + 1);
+                });
             }
         }
     }); //only_save_click
 
     $(document).on('click', '#i_test_save_next', function (e) {
         // mytest.setQuestionNumbers(test_question);
-        var scroll_pos = $(
-            '#i-btn-view-' + (current_question_index + 1)
-        ).position().top;
+        var scroll_pos = $('#i-btn-view-' + (current_question_index + 1)).position().top;
         if (typeof scroll_pos != 'undefined') {
             if (scroll_pos > 160) {
                 $('#question-btn').scrollTop(
                     $('#question-btn').scrollTop() +
-                        $(
-                            '#i-btn-view-' + (current_question_index + 1)
-                        ).position().top -
-                        $('#question-btn').height() / 1.3
+                        $('#i-btn-view-' + (current_question_index + 1)).position().top -
+                        $('#question-btn').height() / 1.3,
                 );
             }
         }
@@ -916,17 +803,13 @@ $(function () {
     $(document).on('click', '#i_test_skip_only', function (e) {
         // mytest.setQuestionNumbers(test_question);
         $('#i_test_save_only').addClass('hide');
-        var scroll_pos = $(
-            '#i-btn-view-' + (current_question_index + 1)
-        ).position().top;
+        var scroll_pos = $('#i-btn-view-' + (current_question_index + 1)).position().top;
         if (typeof scroll_pos != 'undefined') {
             if (scroll_pos > 160) {
                 $('#question-btn').scrollTop(
                     $('#question-btn').scrollTop() +
-                        $(
-                            '#i-btn-view-' + (current_question_index + 1)
-                        ).position().top -
-                        $('#question-btn').height() / 1.3
+                        $('#i-btn-view-' + (current_question_index + 1)).position().top -
+                        $('#question-btn').height() / 1.3,
                 );
             }
         }
@@ -938,19 +821,12 @@ $(function () {
         _tmp_ans = '';
         if (_temp_question.student_ans.length > 0) {
             var _temp_ans = '';
-            mytest.updateTempArrayList(
-                _temp_question,
-                _temp_ans,
-                function (user_and_data) {
-                    test_question[current_question_index].student_ans = '';
-                    //student_temp_ans_list.push(user_and_data);
-                    mytest.setQuestionNumbers(test_question);
-                    mytest.getQuestionView(
-                        test_question,
-                        current_question_index
-                    );
-                }
-            );
+            mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
+                test_question[current_question_index].student_ans = '';
+                //student_temp_ans_list.push(user_and_data);
+                mytest.setQuestionNumbers(test_question);
+                mytest.getQuestionView(test_question, current_question_index);
+            });
         }
     }); //reset_ans_click
 
@@ -961,14 +837,10 @@ $(function () {
         $('#i_test_mark_for_review').addClass('hide');
         var _temp_question = test_question[current_question_index];
         var _temp_ans = test_question[current_question_index].student_ans;
-        mytest.updateTempArrayList(
-            _temp_question,
-            _temp_ans,
-            function (user_and_data) {
-                // student_temp_ans_list.push(user_and_data);
-                mytest.setQuestionNumbers(test_question);
-            }
-        );
+        mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
+            // student_temp_ans_list.push(user_and_data);
+            mytest.setQuestionNumbers(test_question);
+        });
     }); //set_mark_review_clic
 
     $(document).on('click', '#i_test_unmark_for_review', function (e) {
@@ -978,33 +850,25 @@ $(function () {
         $('#i_test_mark_for_review').removeClass('hide');
         var _temp_question = test_question[current_question_index];
         var _temp_ans = test_question[current_question_index].student_ans;
-        mytest.updateTempArrayList(
-            _temp_question,
-            _temp_ans,
-            function (user_and_data) {
-                // student_temp_ans_list.push(user_and_data);
-                mytest.setQuestionNumbers(test_question);
-            }
-        );
+        mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
+            // student_temp_ans_list.push(user_and_data);
+            mytest.setQuestionNumbers(test_question);
+        });
     }); //set_unmark_click
 
     $(document).on('click', '#i_test_previous_question', function () {
         $('#i_test_save_only').addClass('hide');
         $('#i_test_save_only-12').addClass('hide');
 
-        var scroll_pos = $(
-            '#i-btn-view-' + (current_question_index - 1)
-        ).position().top;
+        var scroll_pos = $('#i-btn-view-' + (current_question_index - 1)).position().top;
 
         if (typeof scroll_pos != 'undefined') {
             if (scroll_pos < 24) {
                 $('#question-btn').scrollTop(
                     $('#question-btn').scrollTop() +
-                        $(
-                            '#i-btn-view-' + (current_question_index - 1)
-                        ).position().top -
+                        $('#i-btn-view-' + (current_question_index - 1)).position().top -
                         $('#question-btn').height() / 2 +
-                        $('#question-btn').height() / 2
+                        $('#question-btn').height() / 2,
                 );
             }
         }
@@ -1078,7 +942,7 @@ function loadMathjax() {
             ['Typeset', MathJax.Hub, 'main-pater-row'],
             function () {
                 $('#main-pater-row').css('visibility', 'visible'); // may have to be "visible" rather than ""
-            }
+            },
         );
     }
 } //loadMathjax(){}

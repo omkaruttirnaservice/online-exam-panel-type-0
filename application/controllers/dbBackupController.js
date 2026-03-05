@@ -21,8 +21,8 @@ let serverNumber = process.env.SERVER_NO || 1;
 let centerCode = null;
 let backupInterval = null;
 
-const ONE_MIN_TO_MILISECONDS = 300000;
-const BACKUP_INTERVAL_MIN = 1;
+const ONE_MIN_TO_MILISECONDS = 60000;
+const BACKUP_INTERVAL_MIN = 5;
 let backupIntervalTime = BACKUP_INTERVAL_MIN * ONE_MIN_TO_MILISECONDS;
 
 // let serverNumber = null;

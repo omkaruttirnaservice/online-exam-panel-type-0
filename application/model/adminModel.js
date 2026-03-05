@@ -133,7 +133,9 @@ module.exports = {
                     'mt_name, mt_added_date, mt_descp, mt_is_live, mt_time_stamp, mt_type, tm_aouth_id, ' +
                     'mt_test_time, mt_total_test_takan, mt_is_negative, mt_negativ_mark, mt_mark_per_question, ' +
                     'mt_passing_out_of, mt_total_marks, mt_pattern_type, mt_total_test_question, mt_added_time, ' +
-                    'mt_pattern_name, is_test_generated,ptl_test_mode, tm_allow_to, is_test_loaded, is_student_added) VALUES ?';
+                    'mt_pattern_name, is_test_generated,ptl_test_mode, tm_allow_to, is_test_loaded, is_student_added, ' +
+                    'is_show_exam_sections, is_show_mark_for_review ,is_show_clear_response ' +
+                    ') VALUES ?';
 
                 publish_data.forEach(function (value, index, main_array) {
                     $data = [
@@ -176,6 +178,9 @@ module.exports = {
                         value.tm_allow_to,
                         value.is_test_loaded,
                         value.is_test_unloaded,
+                        value.is_show_exam_sections,
+                        value.is_show_mark_for_review,
+                        value.is_show_clear_response,
                     ];
                     insert_array.push($data);
                 });

@@ -69,6 +69,11 @@ block inline_js
             $('#student_list').DataTable();
             $('.live-active').addClass('active');
             console.log(#{ns});
+
+            let refreshInterval = 5000 // 5 seconds
+            setInterval(()=>{
+                window.location.reload()
+            }, refreshInterval)
         });
     
 block css_link

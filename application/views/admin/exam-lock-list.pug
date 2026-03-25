@@ -90,6 +90,12 @@ block inline_js
         var resone = '';
         var _id = 0;
         $(document).ready(function() {
+
+            let refreshInterval = 5000 // 5 seconds
+            setInterval(()=>{
+                window.location.reload()
+            }, refreshInterval)
+
             $('#student_list').DataTable();
             $('.live-active').addClass('active');
             $('#unlockUser').on('click',function(){

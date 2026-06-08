@@ -1,4 +1,4 @@
-﻿var test_question = new Array(); //question paper
+var test_question = new Array(); //question paper
 var test_name = ""; // main_test_name
 var current_duration = 0; // test time for count down
 var ans_review_count = 0;
@@ -48,12 +48,12 @@ var Mytest = function () {
           main_topic_name = value.main_topic_name;
           $("#question-btn").append(
             '<div class="form-group">' +
-              "<center>" +
-              '<p style="width: 100%;border: 1px solid #000;padding: 2px;margin-top: 5px;background-color:#a09362;color: #fff;border-radius: 10px;"><strong>' +
-              capitalize(main_topic_name) +
-              "</strong></p>" +
-              "</center>" +
-              "</div>"
+            "<center>" +
+            '<p style="width: 100%;border: 1px solid #000;padding: 2px;margin-top: 5px;background-color:#a09362;color: #fff;border-radius: 10px;"><strong>' +
+            capitalize(main_topic_name) +
+            "</strong></p>" +
+            "</center>" +
+            "</div>"
           );
           question_print_count = 1;
         }
@@ -72,23 +72,23 @@ var Mytest = function () {
             ans_review_count += 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_review_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_review_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           } else {
             unans_review_count += 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_review" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_review" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           }
         } else {
@@ -97,22 +97,22 @@ var Mytest = function () {
             ans_not_ans = parseInt(ans_not_ans) - 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           } else {
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_not_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_not_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           }
         } // main if-else
@@ -615,7 +615,7 @@ var Mytest = function () {
       }
       return list;
     }),
-    (this.updateTempArrayList = function (_temp_question, _temp_ans, callback) {
+    (this.updateTempArrayList = function (_temp_question, _temp_ans, from_val, to_val, callback) {
       //student_temp_ans_list = this.checkForTempArrayDuplicate(student_temp_ans_list, current_question_index);
       student_temp_ans_list = [];
       var user_and_data = {
@@ -630,7 +630,7 @@ var Mytest = function () {
       sendSaveData(function () {
         student_temp_ans_list = new Array();
         callback(user_and_data);
-      });
+      }, from_val, to_val);
     }),
     (this.saveTest = function (data, callback) {
       $.ajax({
@@ -701,10 +701,10 @@ var Mytest = function () {
           setTimeout(function () {
             location.replace(
               _getUrl() +
-                "climax/" +
-                _t_s_i[0].Exam.published_id +
-                "/" +
-                _t_s_i[0].StudentInfo.id
+              "climax/" +
+              _t_s_i[0].Exam.published_id +
+              "/" +
+              _t_s_i[0].StudentInfo.id
             );
           }, 1000);
         } else {
@@ -722,6 +722,11 @@ function _getQuestionView(this_data, event, index_id) {
   // alert(index_id);
   // alert(last_index);
   // if (index_id != last_index) {
+  var from_q = current_question_index + 1;
+  var to_q = index_id + 1;
+  if (from_q !== to_q) {
+    sendNavigationOnly(from_q, to_q);
+  }
   last_index = index_id;
   $("#i_test_save_only").addClass("hide");
   $("#i_test_save_only-12").addClass("hide");
@@ -729,7 +734,7 @@ function _getQuestionView(this_data, event, index_id) {
   // }
 } //_getQuestionView(){}
 
-function loadMathjax() {} //loadMathjax(){}
+function loadMathjax() { } //loadMathjax(){}
 
 $(function () {
   switch (user_is_new) {
@@ -811,6 +816,8 @@ $(function () {
         mytest.updateTempArrayList(
           _temp_question,
           _temp_ans,
+          current_question_index + 1,
+          current_question_index + 1,
           function (user_and_data) {
             test_question[current_question_index].student_ans = _tmp_ans;
             // student_temp_ans_list.push(user_and_data);
@@ -831,6 +838,8 @@ $(function () {
         mytest.updateTempArrayList(
           _temp_question,
           _temp_ans,
+          current_question_index + 1,
+          current_question_index + 2,
           function (user_and_data) {
             test_question[current_question_index].student_ans = _tmp_ans;
             // student_temp_ans_list.push(user_and_data);
@@ -844,9 +853,9 @@ $(function () {
               if (scroll_pos > 160) {
                 $("#question-btn").scrollTop(
                   $("#question-btn").scrollTop() +
-                    $("#i-btn-view-" + (current_question_index + 1)).position()
-                      .top -
-                    $("#question-btn").height() / 1.3
+                  $("#i-btn-view-" + (current_question_index + 1)).position()
+                    .top -
+                  $("#question-btn").height() / 1.3
                 );
               }
             }
@@ -867,11 +876,12 @@ $(function () {
       if (scroll_pos > 160) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index + 1)).position().top -
-            $("#question-btn").height() / 1.3
+          $("#i-btn-view-" + (current_question_index + 1)).position().top -
+          $("#question-btn").height() / 1.3
         );
       }
     }
+    sendNavigationOnly(current_question_index + 1, current_question_index + 2);
     mytest.getQuestionView(test_question, current_question_index + 1);
   }); //save_next_click
 
@@ -884,11 +894,12 @@ $(function () {
       if (scroll_pos > 160) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index + 1)).position().top -
-            $("#question-btn").height() / 1.3
+          $("#i-btn-view-" + (current_question_index + 1)).position().top -
+          $("#question-btn").height() / 1.3
         );
       }
     }
+    sendNavigationOnly(current_question_index + 1, current_question_index + 2);
     mytest.getQuestionView(test_question, current_question_index + 1);
   }); //skip_click
 
@@ -896,10 +907,13 @@ $(function () {
     var _temp_question = test_question[current_question_index];
     _tmp_ans = "";
     if (_temp_question.student_ans.length > 0) {
+      window.current_action_type = "CLEAR_RESPONSE";
       var _temp_ans = "";
       mytest.updateTempArrayList(
         _temp_question,
         _temp_ans,
+        current_question_index + 1,
+        current_question_index + 1,
         function (user_and_data) {
           test_question[current_question_index].student_ans = "";
           //student_temp_ans_list.push(user_and_data);
@@ -915,11 +929,14 @@ $(function () {
     test_question[current_question_index].mark_review = 1;
     $("#i_test_unmark_for_review").removeClass("hide");
     $("#i_test_mark_for_review").addClass("hide");
+    window.current_action_type = "MARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(
       _temp_question,
       _temp_ans,
+      current_question_index + 1,
+      current_question_index + 1,
       function (user_and_data) {
         // student_temp_ans_list.push(user_and_data);
         mytest.setQuestionNumbers(test_question);
@@ -932,11 +949,14 @@ $(function () {
     test_question[current_question_index].mark_review = 0;
     $("#i_test_unmark_for_review").addClass("hide");
     $("#i_test_mark_for_review").removeClass("hide");
+    window.current_action_type = "UNMARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(
       _temp_question,
       _temp_ans,
+      current_question_index + 1,
+      current_question_index + 1,
       function (user_and_data) {
         // student_temp_ans_list.push(user_and_data);
         mytest.setQuestionNumbers(test_question);
@@ -955,13 +975,14 @@ $(function () {
       if (scroll_pos < 24) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index - 1)).position().top -
-            $("#question-btn").height() / 2 +
-            $("#question-btn").height() / 2
+          $("#i-btn-view-" + (current_question_index - 1)).position().top -
+          $("#question-btn").height() / 2 +
+          $("#question-btn").height() / 2
         );
       }
     }
 
+    sendNavigationOnly(current_question_index + 1, current_question_index);
     mytest.getQuestionView(test_question, current_question_index - 1);
     mytest.setQuestionNumbers(test_question);
   }); //get_previus_question
@@ -983,7 +1004,8 @@ $(function () {
           test_status: 0,
           test_id: orignal_test_id,
           publish_id: orignal_publish_id,
-          student_id: orignal_student_id
+          student_id: orignal_student_id,
+          attempted: getCurrentAttemptedCount()
         };
         student_temp_ans_list = [];
         is_time_pause = true;
@@ -1005,7 +1027,8 @@ $(function () {
         test_status: 1,
         test_id: orignal_test_id,
         publish_id: orignal_publish_id,
-        student_id: orignal_student_id
+        student_id: orignal_student_id,
+        attempted: getCurrentAttemptedCount()
       };
       student_temp_ans_list = [];
       is_time_pause = true;
@@ -1049,7 +1072,41 @@ function redirectMessage(msg, url) {
   }, 8000);
 }
 
-function sendSaveData(callback) {
+/**
+ * Calculates the current number of attempted questions.
+ * Inspects already answered questions in memory and accounts for any pending answer save in the local buffer.
+ * @returns {number} The count of questions with student answers
+ */
+function getCurrentAttemptedCount() {
+  var count = 0;
+  for (var i = 0; i < test_question.length; i++) {
+    if (test_question[i].student_ans && test_question[i].student_ans !== "") {
+      count++;
+    }
+  }
+  if (student_temp_ans_list.length > 0) {
+    var latestAction = student_temp_ans_list[0];
+    if (latestAction.q_index !== undefined && test_question[latestAction.q_index]) {
+      var existingAns = test_question[latestAction.q_index].student_ans;
+      var newAns = latestAction.user_ans;
+      if (existingAns === "" && newAns !== "") {
+        count++;
+      } else if (existingAns !== "" && newAns === "") {
+        count--;
+      }
+    }
+  }
+  return count;
+}
+
+/**
+ * Sends student answer save request to the server, including navigation context
+ * and current question attempt metrics for activity logging.
+ * @param {Function} callback - Success callback handler
+ * @param {number|null} from_val - Origin question number (1-indexed)
+ * @param {number|null} to_val - Destination question number (1-indexed)
+ */
+function sendSaveData(callback, from_val, to_val) {
   var _data = {
     list: JSON.stringify(student_temp_ans_list),
     min: min,
@@ -1057,10 +1114,39 @@ function sendSaveData(callback) {
     test_status: 1,
     test_id: orignal_test_id,
     publish_id: orignal_publish_id,
-    student_id: orignal_student_id
+    student_id: orignal_student_id,
+    from: from_val || null,
+    to: to_val || null,
+    attempted: getCurrentAttemptedCount(),
+    action_type: window.current_action_type || null
   };
+  window.current_action_type = null;
   mytest.saveTest(_data, function (json) {
     time_to_save_data = auto_save_time_q;
     callback();
+  });
+}
+
+/**
+ * Sends a lightweight request containing only question navigation data
+ * to register the navigation event in the activity log database.
+ * @param {number} from_val - Origin question number (1-indexed)
+ * @param {number} to_val - Destination question number (1-indexed)
+ */
+function sendNavigationOnly(from_val, to_val) {
+  var _data = {
+    list: JSON.stringify([]),
+    min: min,
+    sec: sec,
+    test_status: 1,
+    test_id: orignal_test_id,
+    publish_id: orignal_publish_id,
+    student_id: orignal_student_id,
+    from: from_val,
+    to: to_val,
+    attempted: getCurrentAttemptedCount()
+  };
+  mytest.saveTest(_data, function (json) {
+    time_to_save_data = auto_save_time_q;
   });
 }

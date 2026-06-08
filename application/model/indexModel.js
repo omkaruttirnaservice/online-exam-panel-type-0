@@ -1,6 +1,6 @@
 var responderSet = require('../config/_responderSet');
 var resultStatus = responderSet.checkResult;
-
+var activityLogger = require('../utils/activitylogger');
 module.exports = {
     updateStudentDetails: function (pool, id, mobile_no) {
         return new Promise(function (resolve, reject) {
@@ -153,7 +153,8 @@ module.exports = {
             );
         });
     },
-    getStudentVerifyForExam: function (pool, student_details, batch_no) {
+    // getStudentVerifyForExam: function (req, pool, student_details, batch_no) {
+    getStudentVerifyForExam: function (req, pool, student_details, batch_no) {
         return new Promise(function (resolve, reject) {
             var query =
                 'SELECT ' +
@@ -204,7 +205,28 @@ module.exports = {
                         reject(responderSet.sendData);
                 } else {
                     if (result.length > 0) {
+
                         if (result[0].stud_attendace != 0) {
+
+                            // Log locked candidate's failed login attempt for audit
+                            activityLogger.log(
+                                req,
+                                pool,
+                                'LOCKED_LOGIN_ATTEMPT',
+                                'You are Locked. Contact To Admin',
+                                {
+                                    student_id: result[0].id,
+                                    student_name: `${result[0].sl_f_name} ${result[0].sl_l_name}`,
+                                    roll_no: result[0].sl_roll_number,
+                                    batch_id: result[0].sl_batch_no,
+                                    mac_address: student_details.mac || null,
+
+                                    extra_reason: 'Attendance already marked / locked candidate'
+                                }
+                            ).catch(function (err) {
+                                console.error("[ActivityLogger] Error logging locked candidate login attempt:", err);
+                            });
+
                             (responderSet.sendData._call = 0),
                                 (responderSet.sendData._error = 'You are Locked. Contact To Admin'),
                                 (responderSet.sendData._sys_erorr = err),

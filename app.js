@@ -32,6 +32,24 @@ app.use(
 // create a single instance or database
 app.use(db_connect.myConnection(db_connect.mysql, db_connect.dbOptions, 'single'));
 
+
+// app.use((req, res, next) => {
+//     const oldJson = res.json;
+//     const oldSend = res.send;
+
+//     res.json = function (data) {
+//         console.log("JSON RESPONSE:", req.url, res.headersSent);
+//         return oldJson.call(this, data);
+//     };
+
+//     res.send = function (data) {
+//         console.log("SEND RESPONSE:", req.url, res.headersSent);
+//         return oldSend.call(this, data);
+//     };
+
+//     next();
+// });
+
 // view engine set
 
 app.set('views', path.join(__dirname, 'application/views'));

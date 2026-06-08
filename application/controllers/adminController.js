@@ -3,7 +3,8 @@ var responderSet = require("../config/_responderSet");
 var cURLConf = require("../config/curl.config");
 var request = require("request"); //requiring request module
 const fs = require("fs");
-
+const { console } = require("inspector");
+const activityLogger = require('../utils/activitylogger');
 var resultStatus = responderSet.checkResult;
 
 var adminController = {
@@ -230,6 +231,8 @@ var adminController = {
         exam_list = {
             exam_list: JSON.parse(data.exam_list)
         };
+        console.log("URL =", cURLConf.CURL_link.new_exam_list_v2);
+        console.log("TOKEN =", process.env.DE_TOKEN);
 
         request.post(
             {
@@ -238,6 +241,7 @@ var adminController = {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${process.env.DE_TOKEN}`
+
                 }
             },
             function (error, response, body) {
@@ -267,6 +271,10 @@ var adminController = {
             "Getting exam list from : ",
             cURLConf.CURL_link.new_exam_list_v2
         );
+
+        console.log("URLV2 =", cURLConf.CURL_link.new_exam_list_v2);
+        console.log("TOKENV2 =", process.env.DE_TOKEN);
+
         request.post(
             {
                 url: cURLConf.CURL_link.new_exam_list_v2,
@@ -293,6 +301,12 @@ var adminController = {
 
     getCURLCenterDetails: function (req, res, next) {
         var data = req.body;
+
+
+        console.log("URLCenter =", cURLConf.CURL_link.new_exam_list_v2);
+        console.log("TOKENCenter =", process.env.DE_TOKEN);
+
+
         request(
             {
                 url:
@@ -792,11 +806,24 @@ var adminController = {
     },
     unlockOneUser: function (req, res, next) {
         var data = req.body;
+        console.log("data========", data)
         AdminModel.clearUnlockOneUser(res.pool, data.stud_id)
             .then((result) => {
                 return AdminModel.addclearUnlockUserLog(res.pool, data);
             })
-            .then((data) => {
+            .then((logResult) => {
+                // Asynchronously log the admin unlock action for this specific student
+                activityLogger.log(
+                    req,
+                    res.pool,
+                    'UNLOCK_ONE_USER',
+                    'Candidate unlocked by Admin. Cause: ' + (data.cause || 'Not specified'),
+                    {
+                        roll_no: data.stud_id,
+                        login_type: 'admin_action'
+                    }
+                ).catch(err => console.error('Activity logger error:', err));
+
                 res.status(200).send({ call: 1 });
             })
             .catch((error) => {
@@ -805,8 +832,21 @@ var adminController = {
             });
     },
     unlockAllUser: function (req, res, next) {
+        // Clear student attendance records to unlock all users
         AdminModel.clearTableRecored(res.pool, "utr_student_attendance")
             .then((result) => {
+                // Asynchronously log the system-wide unlock activity
+                activityLogger.log(
+                    req,
+                    res.pool,
+                    'UNLOCK_ALL_USERS',
+                    'All candidates unlocked by Admin',
+                    {
+                        login_type: 'admin_action'
+                    }
+                ).catch(err => console.error('Activity logger error:', err));
+
+                // Send success response back to administration interface (only once)
                 res.status(200).send({ call: 1 });
             })
             .catch((error) => {

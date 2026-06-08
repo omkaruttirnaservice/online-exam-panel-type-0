@@ -750,7 +750,8 @@ $(function () {
     var _temp_question = test_question[current_question_index];
     _tmp_ans = '';
     if (_temp_question.student_ans.length > 0) {
-      var _temp_ans = '';
+      window.current_action_type = "CLEAR_RESPONSE";
+      var _temp_ans = "";
       mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
         test_question[current_question_index].student_ans = '';
         //student_temp_ans_list.push(user_and_data);
@@ -769,6 +770,7 @@ $(function () {
     
     $('#i_test_unmark_for_review').removeClass('hide');
     $('#i_test_mark_for_review').addClass('hide');
+    window.current_action_type = "MARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
@@ -782,6 +784,7 @@ $(function () {
     test_question[current_question_index].mark_review = 0;
     $('#i_test_unmark_for_review').addClass('hide');
     $('#i_test_mark_for_review').removeClass('hide');
+    window.current_action_type = "UNMARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(_temp_question, _temp_ans, function (user_and_data) {
@@ -918,7 +921,7 @@ function redirectMessage(msg = '', url) {
   $('.btn-close').css('display', 'none');
 }
 
-function sendSaveData(callback){
+function sendSaveData(callback, from_val, to_val){
       var _data = {
                     list: JSON.stringify(student_temp_ans_list),
                     min: min,
@@ -926,8 +929,13 @@ function sendSaveData(callback){
                     test_status: 1,
                     test_id: orignal_test_id,
                     publish_id: orignal_publish_id,
-                    student_id: orignal_student_id
+                    student_id: orignal_student_id,
+                    from: from_val || null,
+                    to: to_val || null,
+                    attempted: getCurrentAttemptedCount(),
+                    action_type: window.current_action_type || null
                   };
+      window.current_action_type = null;
       mytest.saveTest(_data, function (json) {
             time_to_save_data = auto_save_time_q;
             callback();

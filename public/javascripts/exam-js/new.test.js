@@ -51,12 +51,12 @@ var Mytest = function () {
           main_topic_name = value.main_topic_name;
           $("#question-btn").append(
             '<div class="form-group">' +
-              "<center>" +
-              '<p style="width: 100%;border: 1px solid #000;padding: 2px;margin-top: 5px;background-color:#a09362;color: #fff;border-radius: 10px;"><strong>' +
-              capitalize(main_topic_name) +
-              "</strong></p>" +
-              "</center>" +
-              "</div>"
+            "<center>" +
+            '<p style="width: 100%;border: 1px solid #000;padding: 2px;margin-top: 5px;background-color:#a09362;color: #fff;border-radius: 10px;"><strong>' +
+            capitalize(main_topic_name) +
+            "</strong></p>" +
+            "</center>" +
+            "</div>"
           );
           question_print_count = 1;
         }
@@ -75,23 +75,23 @@ var Mytest = function () {
             ans_review_count += 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_review_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_review_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           } else {
             unans_review_count += 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_review" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_review" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           }
         } else {
@@ -100,22 +100,22 @@ var Mytest = function () {
             ans_not_ans = parseInt(ans_not_ans) - 1;
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           } else {
             $("#question-btn").append(
               '<a type="button" id="i-btn-view-' +
-                key +
-                '" class="ans_not_done" name="button" onclick="_getQuestionView(this,event,' +
-                key +
-                ')">' +
-                question_print_count +
-                "</a>"
+              key +
+              '" class="ans_not_done" name="button" onclick="_getQuestionView(this,event,' +
+              key +
+              ')">' +
+              question_print_count +
+              "</a>"
             );
           }
         } // main if-else
@@ -629,7 +629,7 @@ var Mytest = function () {
       };
       student_temp_ans_list.push(user_and_data);
       sendSaveData(function () {
-        
+
         student_temp_ans_list = new Array();
         callback(user_and_data);
       });
@@ -703,10 +703,10 @@ var Mytest = function () {
           setTimeout(function () {
             location.replace(
               _getUrl() +
-                "climax/" +
-                _t_s_i[0].Exam.published_id +
-                "/" +
-                _t_s_i[0].StudentInfo.id
+              "climax/" +
+              _t_s_i[0].Exam.published_id +
+              "/" +
+              _t_s_i[0].StudentInfo.id
             );
           }, 1000);
         } else {
@@ -731,7 +731,7 @@ function _getQuestionView(this_data, event, index_id) {
   // }
 } //_getQuestionView(){}
 
-function loadMathjax() {} //loadMathjax(){}
+function loadMathjax() { } //loadMathjax(){}
 
 $(function () {
   switch (user_is_new) {
@@ -823,9 +823,9 @@ $(function () {
               if (scroll_pos > 160) {
                 $("#question-btn").scrollTop(
                   $("#question-btn").scrollTop() +
-                    $("#i-btn-view-" + (current_question_index + 1)).position()
-                      .top -
-                    $("#question-btn").height() / 1.3
+                  $("#i-btn-view-" + (current_question_index + 1)).position()
+                    .top -
+                  $("#question-btn").height() / 1.3
                 );
               }
             }
@@ -846,8 +846,8 @@ $(function () {
       if (scroll_pos > 160) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index + 1)).position().top -
-            $("#question-btn").height() / 1.3
+          $("#i-btn-view-" + (current_question_index + 1)).position().top -
+          $("#question-btn").height() / 1.3
         );
       }
     }
@@ -863,8 +863,8 @@ $(function () {
       if (scroll_pos > 160) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index + 1)).position().top -
-            $("#question-btn").height() / 1.3
+          $("#i-btn-view-" + (current_question_index + 1)).position().top -
+          $("#question-btn").height() / 1.3
         );
       }
     }
@@ -875,6 +875,7 @@ $(function () {
     var _temp_question = test_question[current_question_index];
     _tmp_ans = "";
     if (_temp_question.student_ans.length > 0) {
+      window.current_action_type = "CLEAR_RESPONSE";
       var _temp_ans = "";
       mytest.updateTempArrayList(
         _temp_question,
@@ -894,6 +895,7 @@ $(function () {
     test_question[current_question_index].mark_review = 1;
     $("#i_test_unmark_for_review").removeClass("hide");
     $("#i_test_mark_for_review").addClass("hide");
+    window.current_action_type = "MARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(
@@ -911,6 +913,7 @@ $(function () {
     test_question[current_question_index].mark_review = 0;
     $("#i_test_unmark_for_review").addClass("hide");
     $("#i_test_mark_for_review").removeClass("hide");
+    window.current_action_type = "UNMARK_FOR_REVIEW";
     var _temp_question = test_question[current_question_index];
     var _temp_ans = test_question[current_question_index].student_ans;
     mytest.updateTempArrayList(
@@ -934,9 +937,9 @@ $(function () {
       if (scroll_pos < 24) {
         $("#question-btn").scrollTop(
           $("#question-btn").scrollTop() +
-            $("#i-btn-view-" + (current_question_index - 1)).position().top -
-            $("#question-btn").height() / 2 +
-            $("#question-btn").height() / 2
+          $("#i-btn-view-" + (current_question_index - 1)).position().top -
+          $("#question-btn").height() / 2 +
+          $("#question-btn").height() / 2
         );
       }
     }
@@ -1044,7 +1047,7 @@ function redirectMessage(msg = "", url) {
 //   $('.btn-close').css('display', 'none');
 // }
 
-function sendSaveData(callback) {
+function sendSaveData(callback, from_val, to_val) {
   var _data = {
     list: JSON.stringify(student_temp_ans_list),
     min: min,
@@ -1053,7 +1056,12 @@ function sendSaveData(callback) {
     test_id: orignal_test_id,
     publish_id: orignal_publish_id,
     student_id: orignal_student_id,
+    from: from_val || null,
+    to: to_val || null,
+    attempted: getCurrentAttemptedCount(),
+    action_type: window.current_action_type || null
   };
+  window.current_action_type = null;
   mytest.saveTest(_data, function (json) {
     time_to_save_data = auto_save_time_q;
     callback();
@@ -1093,10 +1101,10 @@ setInterval(function () {
         setTimeout(function () {
           location.replace(
             _getUrl() +
-              "climax/" +
-              _t_s_i[0].Exam.published_id +
-              "/" +
-              _t_s_i[0].StudentInfo.id
+            "climax/" +
+            _t_s_i[0].Exam.published_id +
+            "/" +
+            _t_s_i[0].StudentInfo.id
           );
         }, 1500);
       } else {
@@ -1130,9 +1138,9 @@ setInterval(function () {
             if (scroll_pos > 160) {
               $("#question-btn").scrollTop(
                 $("#question-btn").scrollTop() +
-                  $("#i-btn-view-" + (current_question_index + 1)).position()
-                    .top -
-                  $("#question-btn").height() / 1.3
+                $("#i-btn-view-" + (current_question_index + 1)).position()
+                  .top -
+                $("#question-btn").height() / 1.3
               );
             }
           }
